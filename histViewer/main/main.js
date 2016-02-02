@@ -30,10 +30,15 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		var isFirstTimeline = true;
 
+		var timelineEventLocations = [];
+		var numberShownEvents = 0;
+
 		$scope.generateTimeline = function (person) {
 			//Need to adjust this when we do multiple timelines
 			isFirstTimeline = true;
 			$("#timelineContainer").empty(); //Delete any other timelines that are currently shown.
+			timelineEventLocations = [];
+			numberShownEvents = 0;
 			$(".se-pre-con").show(); //Show the loading spinner
 			$scope.person = person;
 			DatabaseControlService.queryForWho(person).then(function () {//Load the data from the person selected
@@ -43,6 +48,13 @@ angular.module('histViewer.main', ['ngRoute'])
 			});
 		};
 
+		//This function is called whenever a timeline event is clicked. The item variable is the html element clicked (div)
+		function eventClick (item) {
+			var itemId = item.currentTarget.id;
+			var itemNum = parseInt(itemId.substr(itemId.indexOf("-") + 1));
+			alert("Event " + itemNum);
+		}
+
 		//This function takes information that is calculated in the createTimeline function and dynamically adds an event circle and popup
 		function drawEvent (event, yearGap, timelineHeight, minYear, maxYear, blankAreaOnSideOfTimeline) {
 			var sectionMinYear;
@@ -51,6 +63,7 @@ angular.module('histViewer.main', ['ngRoute'])
 					sectionMinYear = i;
 				}
 			}
+			numberShownEvents++;
 
 			var sectionsSkipped = (sectionMinYear - minYear)/yearGap;
 
@@ -61,7 +74,9 @@ angular.module('histViewer.main', ['ngRoute'])
 			var percentDistBetween = ((momentEvent - momentMin)/(momentMax - momentMin));
 			var xPos = blankAreaOnSideOfTimeline + (120 * sectionsSkipped) + (120 * percentDistBetween);
 
-			var div = '<div class="eventCircle" style="top:' + (timelineHeight - 6) + 'px;left:' + (xPos - 7.5) + 'px;">';
+			var div = '<div class="eventCircle" id="event-' + numberShownEvents + '" style="top:' + (timelineHeight - 6) + 'px;left:' + (xPos - 7.5) + 'px;">';
+
+			timelineEventLocations.push({numberShownEvents, xPos, timelineHeight, event});
 
 			var innerdiv = '<div class="timelinePopup" ';
 			if ((momentEvent.year() - minYear)/yearGap <= 2) { //Circle is within the first 2 timeline sections
@@ -79,7 +94,11 @@ angular.module('histViewer.main', ['ngRoute'])
 
 			div += innerdiv;
 			div += '</div>';
+
 			$("#scrolling-timeline").append(div);
+
+			var curEvent = document.getElementById("event-" + numberShownEvents);
+			curEvent.onclick = eventClick;
 		}
 
 		//This function draws text on the timeline space centered at the given coordinates
@@ -360,4 +379,8 @@ angular.module('histViewer.main', ['ngRoute'])
 			timelineContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 			bubbleContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 		};
+
+		$("viewContainer").click(function () {
+			debugger;
+		});
 	}]);
