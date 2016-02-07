@@ -25,7 +25,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		}
 	})
 
-	.controller('MainCtrl', ['$scope', 'DatabaseControlService', function ($scope, DatabaseControlService) {
+	.controller('MainCtrl', ['$scope', 'DatabaseControlService', '$location', function ($scope, DatabaseControlService, $location) {
 		$scope.currentView = 'timeline';
 
 		var isFirstTimeline = true;
@@ -53,6 +53,8 @@ angular.module('histViewer.main', ['ngRoute'])
 			var itemId = item.currentTarget.id;
 			var itemNum = parseInt(itemId.substr(itemId.indexOf("-") + 1));
 			alert("Event " + itemNum);
+			$location.path('/bubble/' + timelineEventLocations[itemNum-1].event.id);
+			$scope.$apply();
 		}
 
 		//This function takes information that is calculated in the createTimeline function and dynamically adds an event circle and popup
@@ -379,8 +381,4 @@ angular.module('histViewer.main', ['ngRoute'])
 			timelineContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 			bubbleContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 		};
-
-		$("viewContainer").click(function () {
-			debugger;
-		});
 	}]);
