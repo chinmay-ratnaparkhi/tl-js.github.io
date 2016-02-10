@@ -1,3 +1,28 @@
 <div>
-	Bubble
+	<div id="bubble-container" class='bubble-container'>
+		<div id="centerDiv" class='center bubble-center' ng-click="poke(0)">
+			<span>{{centerBubbleText}}</span>
+		</div>
+
+		<section ng-repeat="bubble in bubbles">
+			<div class="bubble-ring" ng-class="bubble.class" ng-click="bubbleClick(bubble.id)">
+				<i class="fa bubble-fa-icon" ng-class="bubble.icon"></i>
+				<span>{{bubble.text}}</span>
+			</div>
+		</section>
+	</div>
+
+	<div id="control-container" class="control-container">
+		<h1 ng-if="history.length" class="history-title">History</h1>
+
+		<div ng-if="history.length" class="back-button" ng-click="goBack()">
+			<i class="fa fa-backward"></i> Go Back
+		</div>
+
+		<div ng-show="history.length" id="history-list" class="history-list">
+			<div class="list-item" ng-click="goBackTo(item.num)" ng-repeat="item in history">
+				{{item.name}}
+			</div>
+		</div>
+	</div>
 </div>
