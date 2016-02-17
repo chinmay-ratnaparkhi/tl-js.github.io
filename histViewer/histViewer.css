@@ -133,3 +133,7 @@ body, html {
 .eventCircle:hover .timelinePopup{
 	display: block;
 }
+
+.input-group>input, .input-group>div{
+	border-radius: 0 !important;
+}

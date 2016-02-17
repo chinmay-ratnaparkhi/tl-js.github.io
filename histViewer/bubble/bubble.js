@@ -24,6 +24,41 @@ angular.module('histViewer.bubble', ['ngRoute'])
 		$scope.history = [];
 		var currentBubble;
 
+		function wildcard(str, rule) {
+			return new RegExp("^" + rule.replace("*", ".*") + "$").test(str);
+		}
+
+		function shuffle(array) {
+			var currentIndex = array.length, temporaryValue, randomIndex;
+
+			while (0 !== currentIndex) {
+				randomIndex = Math.floor(Math.random() * currentIndex);
+				currentIndex -= 1;
+
+				temporaryValue = array[currentIndex];
+				array[currentIndex] = array[randomIndex];
+				array[randomIndex] = temporaryValue;
+			}
+
+			return array;
+		}
+
+		function getAssociatedItems(currItem, type) {
+			var items = [];
+			$scope.allItems.forEach(function(item) {
+				var typeString = item[type];
+				if(wildcard(typeString, "*" + currItem[type] + "*")) {
+					items.push(item);
+				}
+			});
+
+			if(items.length > 9) {
+				items = shuffle(items).slice(0,9);
+			}
+
+			return items;
+		}
+
 		function getEventById (id) {
 			for (var i in $scope.allItems) {
 				if ($scope.allItems[i].id = id) {
@@ -54,7 +89,10 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			var centerDiv = document.getElementById("centerDiv");
 			//Do work on generating the background picture or some sort of picture
 			$scope.centerBubbleText = limitText(currentItem.what);
+
 			//Here is where we would call a function that finds the links that are associated with the center bubble
+			var assocItems = getAssociatedItems(currentItem);
+
 			var linkAmount = $scope.allItems.length % 9;
 			linkAmount = 5;
 			var startDegree;
