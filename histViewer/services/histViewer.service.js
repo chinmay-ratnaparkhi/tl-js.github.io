@@ -181,6 +181,28 @@ angular.module('histViewer.service', ['ngRoute'])
 			return request;
 		};
 
+		var queryForWhere = function (where) {
+			var query = "SELECT * FROM links WHERE links.where like '%" + where + "%'";
+
+			var request = $http({
+				method: "post",
+				url: apiUrl + "inputQuery",
+				data: {
+					query:query
+				}
+			});
+
+			request.success(function (data) {
+				queryData = data;
+			});
+
+			request.error(function (err) {
+				queryData = [];
+			});
+
+			return request;
+		};
+
 		return {
 			addItem:              addItem,
 			getItems:             getItems,
@@ -191,6 +213,7 @@ angular.module('histViewer.service', ['ngRoute'])
 			ensureDataPopulated:  ensureDataPopulated,
 			queryForWho:          queryForWho,
 			queryForWhat:         queryForWhat,
-			writtenQuery:         writtenQuery
+			writtenQuery:         writtenQuery,
+			queryForWhere:        queryForWhere
 		};
 	}]);
