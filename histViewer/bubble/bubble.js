@@ -9,12 +9,6 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			});
 	}])
 
-	//.filter('reverse', function() {
-	//	return function(items) {
-	//		return items.slice().reverse();
-	//	};
-	//})
-
 	.controller('BubbleCtrl', ['$scope', 'DatabaseControlService', '$location', '$routeParams', function ($scope, DatabaseControlService, $location, $routeParams) {
 		$scope.currentView = 'bubble';
 		//All the events should still be stored in the service.

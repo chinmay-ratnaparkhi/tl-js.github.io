@@ -7,9 +7,10 @@ histViewerMap.config(['$routeProvider', function($routeProvider){
 		templateUrl: 'map/map.html',
 		controller: 'testController'
 	});
-});
+}]);
 
-histViewerMap.controller('testController',function($scope){
+histViewerMap.controller('testController', ['$scope', function($scope){
+	$(".se-pre-con").hide();
 
 		$scope.geoCoder = new google.maps.Geocoder();
 		
@@ -38,6 +39,9 @@ histViewerMap.controller('testController',function($scope){
 			alert("Geocode was not successful for the following reason: " + status);
 		  }
 		});
+
+	var map_container = $('#map');
+	map_container.height($(document).height());
 	
-});
+}]);
 
