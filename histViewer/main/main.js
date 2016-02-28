@@ -51,7 +51,6 @@ angular.module('histViewer.main', ['ngRoute'])
 		function eventClick (item) {
 			var itemId = item.currentTarget.id;
 			var itemNum = parseInt(itemId.substr(itemId.indexOf("-") + 1));
-			alert("Event " + itemNum);
 			$location.path('/bubble/' + timelineEventLocations[itemNum-1].event.id);
 			$scope.$apply();
 		}
