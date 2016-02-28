@@ -119,6 +119,7 @@ body, html {
 	display: none;
 	border-radius: 5px;
 	border: 1px solid black;
+	z-index: 1000;
 }
 
 .eventCircle {
