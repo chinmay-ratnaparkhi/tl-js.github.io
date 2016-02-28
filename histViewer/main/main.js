@@ -28,14 +28,12 @@ angular.module('histViewer.main', ['ngRoute'])
 	.controller('MainCtrl', ['$scope', 'DatabaseControlService', '$location', function ($scope, DatabaseControlService, $location) {
 		$scope.currentView = 'timeline';
 
-		var isFirstTimeline = true;
+		var totalTimelineEvents = [];
 
 		var timelineEventLocations = [];
 		var numberShownEvents = 0;
 
 		$scope.generateTimeline = function (person) {
-			//Need to adjust this when we do multiple timelines
-			isFirstTimeline = true;
 			$("#timelineContainer").empty(); //Delete any other timelines that are currently shown.
 			timelineEventLocations = [];
 			numberShownEvents = 0;
@@ -43,7 +41,8 @@ angular.module('histViewer.main', ['ngRoute'])
 			$scope.person = person;
 			DatabaseControlService.queryForWho(person).then(function () {//Load the data from the person selected
 				var timelineEvents = DatabaseControlService.getQueryItems();
-				createTimeline(timelineEvents);
+				totalTimelineEvents.push(timelineEvents);
+				createTimeline(totalTimelineEvents);
 				$(".se-pre-con").fadeOut("slow"); //Hide the loading spinner
 			});
 		};
@@ -177,7 +176,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		}
 
 
-		function createTimelineImage(centerX, centerY) {
+		function createTimelineImage(centerX, centerY, personName) {
 			var div = $('<div />', {
 				"class": 'timelineImage'
 			});
@@ -186,7 +185,13 @@ angular.module('histViewer.main', ['ngRoute'])
 
 			div.append(fa);
 
-			var person = '<p class="timelineName">' + $scope.person + '</p>';
+			var person = '<p class="timelineName">';
+			if (personName) {
+				person += personName + '</p>';
+			}
+			else {
+				person += $scope.person + '</p>';
+			}
 
 			div.append(person);
 
@@ -233,13 +238,28 @@ angular.module('histViewer.main', ['ngRoute'])
 			return yearGap;
 		}
 
-		function createTimeline(events) {
-			if (isFirstTimeline) {
-				isFirstTimeline = false;
+		function createTimeline(totalEvents, location, personName) {
+			if (totalEvents.length == 1) {
+				var events = totalEvents[totalEvents.length - 1];
 				var cont = $("#timelineContainer");
 				var viewWidth = cont.width();
 				var viewHeight = cont.height();
-				var midlineHeight = viewHeight / 2;
+				var switchNum = (location ? location : 2);
+				var midlineHeight;
+				switch(switchNum) {
+					case 1:
+						midlineHeight = viewHeight / 4;
+						break;
+					case 2:
+						midlineHeight = viewHeight / 2;
+						break;
+					case 3:
+						midlineHeight = 3 *(viewHeight / 4);
+						break;
+					default:
+						midlineHeight = viewHeight / 2;
+						break;
+				}
 
 				//Calculate how many sections of 10 years are needed.
 				var minDate = getMinDate(events);
@@ -312,7 +332,12 @@ angular.module('histViewer.main', ['ngRoute'])
 
 				cont.append(timelineSpace);
 
-				createTimelineImage(410, midlineHeight);
+				if (personName) {
+					createTimelineImage(410, midlineHeight, personName);
+				}
+				else  {
+					createTimelineImage(410, midlineHeight);
+				}
 
 				//100px + 10px border to the left of the line for the picture.
 				//Also has a 10px border on the right of the line to be visually pleasing.
@@ -330,7 +355,20 @@ angular.module('histViewer.main', ['ngRoute'])
 				}
 			}
 			else {
-				//In here the code for multiply timelines will be generated.
+				if (totalEvents.length == 2) {
+					var event1 = totalEvents[0];
+					createTimeline([event1], 2, event1[0].who);
+					var event2 = totalEvents[1];
+					createTimeline([event2], 1, event2[0].who);
+				}
+				else {
+					var event1 = totalEvents[0];
+					createTimeline([event1], 2, event1[0].who);
+					var event2 = totalEvents[1];
+					createTimeline([event2], 1, event2[0].who);
+					var event3 = totalEvents[2];
+					createTimeline([event3], 3, event3[0].who);
+				}
 			}
 		}
 
