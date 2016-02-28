@@ -55,19 +55,11 @@ angular.module('histViewer.bubble', ['ngRoute'])
 
 		function getEventById (id) {
 			for (var i in $scope.allItems) {
-				if ($scope.allItems[i].id = id) {
+				if ($scope.allItems[i].id == id) {
 					return $scope.allItems[i];
 				}
 			}
 			return {}; //Should never hit this case
-		}
-
-		function limitText (text) {
-			if (text.length > 15) {
-				text = text.substr(0, 15);
-				text += "...";
-			}
-			return text;
 		}
 
 		function generateBubbles(eventId, updateHistory) {
@@ -82,7 +74,8 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			currentItem = getEventById(eventId);
 			var centerDiv = document.getElementById("centerDiv");
 			//Do work on generating the background picture or some sort of picture
-			$scope.centerBubbleText = limitText(currentItem.what);
+			$scope.centerBubbleText = currentItem.what;
+			$scope.centerBubbleTitle = currentItem.who;
 
 			//Here is where we would call a function that finds the links that are associated with the center bubble
 			var assocItems = getAssociatedItems(currentItem);
