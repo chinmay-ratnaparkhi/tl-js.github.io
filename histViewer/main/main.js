@@ -237,7 +237,77 @@ angular.module('histViewer.main', ['ngRoute'])
 			return yearGap;
 		}
 
-		function createTimeline(totalEvents, location, personName) {
+		function calculateEventSeparations(event1, event2, event3) {
+			if (!event2) {
+				return;
+			}
+
+			var minDate1, minDate2, minDate;
+
+			if (event3) {
+				var minDate3;
+
+				minDate1 = getMinDate(event1);
+				minDate2 = getMinDate(event2);
+				minDate3 = getMinDate(event3);
+
+				if (minDate1 < minDate2) {
+					if (minDate1 < minDate3) {
+						minDate = minDate1;
+					}
+					else {
+						minDate = minDate3;
+					}
+				}
+				else {
+					if (minDate2 < minDate3) {
+						minDate = minDate2;
+					}
+					else {
+						minDate = minDate3;
+					}
+				}
+
+				if (minDate.year() % 2 == 1) {
+					minDate = minDate.subtract(1, 'years');
+				}
+
+				return [
+					{
+						"yearDiff": (minDate1.year() - minDate.year())
+					},{
+						"yearDiff": (minDate2.year() - minDate.year())
+					},{
+						"yearDiff": (minDate3.year() - minDate.year())
+					}
+				];
+			}
+			else {
+				minDate1 = getMinDate(event1);
+				minDate2 = getMinDate(event2);
+
+				if (minDate1 < minDate2) {
+					minDate = minDate1;
+				}
+				else {
+					minDate = minDate2;
+				}
+
+				if (minDate.year() % 2 == 1) {
+					minDate = minDate.subtract(1, 'years');
+				}
+
+				return [
+					{
+						"yearDiff": (minDate1.year() - minDate.year())
+					},{
+						"yearDiff": (minDate2.year() - minDate.year())
+					}
+				];
+			}
+		}
+
+		function createTimeline(totalEvents, location, personName, gapBeginning, inYearGap) {
 			if (totalEvents.length == 1) {
 				var events = totalEvents[totalEvents.length - 1];
 				var cont = $("#timelineContainer");
@@ -324,7 +394,14 @@ angular.module('histViewer.main', ['ngRoute'])
 					}
 				}
 
+				if (inYearGap) {
+					yearGap = inYearGap;
+				}
+
 				var blankAreaOnSideOfTimeline = 30;
+				if (gapBeginning) {
+					blankAreaOnSideOfTimeline += gapBeginning;
+				}
 
 				//Create a div for the timeline
 				var timelineSpace = '<div id="timelineDrawSpace" class="timelineDrawSpace" style="width:' + (viewWidth - 110) + 'px"><div id="scrolling-timeline" class="scrolling-timeline" style="width:' + ((sectionsNeeded * 120) + (2 * blankAreaOnSideOfTimeline)) + 'px"></div></div>';
@@ -356,17 +433,23 @@ angular.module('histViewer.main', ['ngRoute'])
 			else {
 				if (totalEvents.length == 2) {
 					var event1 = totalEvents[0];
-					createTimeline([event1], 2, event1[0].who);
 					var event2 = totalEvents[1];
-					createTimeline([event2], 1, event2[0].who);
+
+					var values = calculateEventSeparations(event1, event2);
+
+					createTimeline([event1], 2, event1[0].who, 120 * Math.floor(values[0].yearDiff/2), 2);
+					createTimeline([event2], 1, event2[0].who, 120 * Math.floor(values[1].yearDiff/2), 2);
 				}
 				else {
 					var event1 = totalEvents[0];
-					createTimeline([event1], 2, event1[0].who);
 					var event2 = totalEvents[1];
-					createTimeline([event2], 1, event2[0].who);
 					var event3 = totalEvents[2];
-					createTimeline([event3], 3, event3[0].who);
+
+					var values = calculateEventSeparations(event1, event2, event3);
+
+					createTimeline([event1], 2, event1[0].who, 120 * Math.floor(values[0].yearDiff/2), 2);
+					createTimeline([event2], 1, event2[0].who, 120 * Math.floor(values[1].yearDiff/2), 2);
+					createTimeline([event3], 3, event3[0].who, 120 * Math.floor(values[2].yearDiff/2), 2);
 				}
 			}
 		}
