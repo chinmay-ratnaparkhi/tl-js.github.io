@@ -41,7 +41,9 @@ angular.module('histViewer.main', ['ngRoute'])
 			$scope.person = person;
 			DatabaseControlService.queryForWho(person).then(function () {//Load the data from the person selected
 				var timelineEvents = DatabaseControlService.getQueryItems();
-				totalTimelineEvents.push(timelineEvents);
+				if (totalTimelineEvents.length < 3) {
+					totalTimelineEvents.push(timelineEvents);
+				}
 				createTimeline(totalTimelineEvents);
 				$(".se-pre-con").fadeOut("slow"); //Hide the loading spinner
 			});
@@ -174,10 +176,38 @@ angular.module('histViewer.main', ['ngRoute'])
 			return maxDate;
 		}
 
+		//This function is a helper function for the createTimelineImage in order to remove people from the totalTimelineEvents
+		function removeFromTotalEvents (name) {
+			var newTotalEvents = [];
+
+			for (var i in totalTimelineEvents) {
+				if (totalTimelineEvents[i][0].who != name) {
+					newTotalEvents.push(totalTimelineEvents[i]);
+				}
+			}
+
+			totalTimelineEvents = newTotalEvents;
+
+			$("#timelineContainer").empty(); //Delete any other timelines that are currently shown.
+
+			//Need to check if there is only one event in order to fix the name.
+			if (totalTimelineEvents.length == 1) {
+				createTimeline(totalTimelineEvents, false, totalTimelineEvents[0][0].who);
+			}
+			else {
+				createTimeline(totalTimelineEvents);
+			}
+		}
+
 		//This function creates the image and bubble to the left of the timelines
 		function createTimelineImage(centerX, centerY, personName) {
 			var div = $('<div />', {
 				"class": 'timelineImage'
+			});
+
+			div.on("click", function(e){
+				var curName = $(this).find('.timelineName').text();
+				removeFromTotalEvents(curName);
 			});
 
 			var fa = '<i class="fa fa-user"></i>';
@@ -432,6 +462,9 @@ angular.module('histViewer.main', ['ngRoute'])
 				for (var i in events) {
 					drawEvent(events[i], yearGap, midlineHeight, minYear, maxYear, blankAreaOnSideOfTimeline);
 				}
+			}
+			else if (totalEvents.length < 1) {
+
 			}
 			else {
 				if (totalEvents.length == 2) {
