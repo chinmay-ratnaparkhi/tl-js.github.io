@@ -174,7 +174,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			return maxDate;
 		}
 
-
+		//This function creates the image and bubble to the left of the timelines
 		function createTimelineImage(centerX, centerY, personName) {
 			var div = $('<div />', {
 				"class": 'timelineImage'
@@ -202,6 +202,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			$("#timelineDrawSpace").append(div);
 		}
 
+		//This function checks if there are several objects close together that may overlap eachother.
 		function checkCloseObjects (events, yearGap, minYear, maxYear) {
 			var arr = [];
 			var needsAdjustment = false;
@@ -237,6 +238,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			return yearGap;
 		}
 
+		//This function calculates how much timelines need to be moved right or left in order for them to line up.
 		function calculateEventSeparations(event1, event2, event3) {
 			if (!event2) {
 				return;
@@ -307,6 +309,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			}
 		}
 
+		//This function generates the timeline. It calls most other functions.
 		function createTimeline(totalEvents, location, personName, gapBeginning, inYearGap) {
 			if (totalEvents.length == 1) {
 				var events = totalEvents[totalEvents.length - 1];
@@ -454,8 +457,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			}
 		}
 
-		//DrawLine(360, 200, 1000, 200);
-
+		//This function generates the list of people on the list to the left.
 		function generatePeople() {
 			var people = [];
 			var currentPerson = "";
@@ -475,6 +477,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			$(".se-pre-con").fadeOut("slow");
 		});
 
+		//Create variables in order to access certain DOM elements
 		var screen = document.getElementById("wholeScreen");
 		var sideBar = document.getElementById("sideBar");
 		var viewContainer = document.getElementById("viewContainer");
@@ -482,15 +485,18 @@ angular.module('histViewer.main', ['ngRoute'])
 		var bubbleContainer = document.getElementById("bubbleContainer");
 		var html = document.documentElement;
 
+		//Get the dimensions of the screen.
 		var height = html.clientHeight;
 		var width = html.clientWidth;
 
+		//Set dom elements to certain heights and widths depending on the screen dimensions
 		screen.setAttribute("style", "height:" + height + "px;width:" + width + "px;");
 		sideBar.setAttribute("style", "height:" + height + "px;width:" + 350 + "px;");
 		viewContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 		timelineContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 		bubbleContainer.setAttribute("style", "height:" + height + "px;width:" + (width - 350) + "px;");
 
+		//Function that does the above section whenever the screen is resized.
 		window.onresize = function () {
 			height = html.clientHeight;
 			width = html.clientWidth;
