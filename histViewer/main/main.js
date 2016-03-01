@@ -382,6 +382,10 @@ angular.module('histViewer.main', ['ngRoute'])
 
 				yearGap = checkCloseObjects(events, yearGap, minYear, maxYear);
 
+				if (inYearGap) {
+					yearGap = inYearGap;
+				}
+
 				if (minYear % yearGap != 0) {
 					minYear -= (minYear % yearGap);
 				}
@@ -425,10 +429,6 @@ angular.module('histViewer.main', ['ngRoute'])
 							yearGap = 1;
 							break;
 					}
-				}
-
-				if (inYearGap) {
-					yearGap = inYearGap;
 				}
 
 				var blankAreaOnSideOfTimeline = 30;
