@@ -231,11 +231,6 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			generateAspectBubbles(parseInt($routeParams.id), false);
 		}
 
-		$scope.bubbleClick = function (index) {
-			var currentBubble = $scope.bubbles[index];
-			generateAspectBubbles(currentBubble.id, true);
-		};
-
 		//Calculate the font-size for the view
 		var container = document.getElementById("bubble-container");
 		var control_container = document.getElementById("control-container");
