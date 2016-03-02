@@ -9,8 +9,13 @@ histViewerMap.config(['$routeProvider', function($routeProvider){
 	});
 }]);
 
-histViewerMap.controller('testController', ['$scope', function($scope){
+histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', function($scope, $DatabaseControlService){
 	$(".se-pre-con").hide();
+	
+		$scope.allItems = DatabaseControlService.getItems();
+		
+		var currentItem = $scope.allItems[0];
+		var address = currentItem.where;
 
 		$scope.geoCoder = new google.maps.Geocoder();
 		
@@ -20,7 +25,7 @@ histViewerMap.controller('testController', ['$scope', function($scope){
 			zoom: 12
 		  });
 		  
-		var address = "Lawrence, KS";
+		
 		
 		$scope.geoCoder.geocode( { 'address': address}, function(results, status) {
 		  if (status == google.maps.GeocoderStatus.OK) {
@@ -30,7 +35,7 @@ histViewerMap.controller('testController', ['$scope', function($scope){
 			$scope.marker = new google.maps.Marker({
 				
 				position: results[0].geometry.location,
-				title: "Hello world!"
+				title: currentItem.what
 			});
 			
 			$scope.marker.setMap($scope.map);
