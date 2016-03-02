@@ -50,6 +50,7 @@ body, html {
 }
 
 .person-listing {
+	cursor: pointer;
 	text-align: center;
 	height: 50px;
 	margin: .2em;
@@ -60,6 +61,7 @@ body, html {
 
 .person-listing:hover {
 	border: 2px solid black;
+	cursor: pointer;
 	background: lightgrey;
 }
 
@@ -121,6 +123,7 @@ body, html {
 }
 
 .eventCircle {
+	cursor: pointer;
 	position:absolute;
 	height: 15px;
 	width: 15px;
