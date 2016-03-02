@@ -14,7 +14,6 @@ body, html {
 .sideBar {
 	background: url("http://i.stack.imgur.com/sepyh.jpg");
 	float: left;
-	border-right: 1px solid black;
 }
 
 .viewContainer {
@@ -48,7 +47,6 @@ body, html {
 
 .people-list {
 	overflow: auto;
-	height: 100% -35px;
 }
 
 .person-listing {

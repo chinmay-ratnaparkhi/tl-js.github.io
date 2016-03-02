@@ -62,69 +62,43 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			return {}; //Should never hit this case
 		}
 
-		function generateBubbles(eventId, updateHistory) {
-			if (updateHistory) {
-				var itemToAdd = {
-					"num": $scope.history.length,
-					"id": currentItem.id,
-					"name": currentItem.who
-				};
-				$scope.history.push(itemToAdd);
-			}
-			currentItem = getEventById(eventId);
-			var centerDiv = document.getElementById("centerDiv");
-			//Do work on generating the background picture or some sort of picture
-			$scope.centerBubbleText = currentItem.what;
-			$scope.centerBubbleTitle = currentItem.who;
+		function getDegreeValues(linkAmount) {
+			var values = {
+				"startDegree": 0,
+				"degreeSpacing": 0
+			};
 
-			//Here is where we would call a function that finds the links that are associated with the center bubble
-			var assocItems = getAssociatedItems(currentItem);
-
-			var linkAmount = $scope.allItems.length % 9;
-			linkAmount = 5;
-			var startDegree;
-			var degreeSpacing = 0;
-			switch (linkAmount) {
+			switch (linkAmount) {//cases 2 and 6 remain at 0
 				case 1:
-					startDegree = 270;
-					break;
-				case 2:
-					startDegree = 0;
+					values.startDegree = 270;
 					break;
 				case 3:
-					startDegree = 30;
+					values.startDegree = 30;
 					break;
 				case 4:
-					startDegree = 45;
+					values.startDegree = 45;
 					//startDegree = 0;
 					break;
 				case 5:
-					startDegree = 54; //The extra one will be at angle 270 (top)
+					values.startDegree = 54; //The extra one will be at angle 270 (top)
 					//startDegree = 18; //The extra one will be at angle 90 (bottom)
 					break;
-				case 6:
-					startDegree = 0; //symmetric about the y
-					//startDegree = 30; //symmetric about the x
-					break;
 				case 7:
-					startDegree = 39; //The extra one will be at the bottom
+					values.startDegree = 39; //The extra one will be at the bottom
 					//startDegree = 15; //The extra one will be at the top
 					break;
 				case 8:
-					startDegree = 23; //There are 2 bubbles in each quadrant
+					values.startDegree = 23; //There are 2 bubbles in each quadrant
 					//startDegree = 0; //There are 4 on the axes and 4 in the quadrants
 					break;
 				case 9:
-					startDegree = 10; //The extra one will be at the bottom
+					values.startDegree = 10; //The extra one will be at the bottom
 					//startDegree = 30; //The extra one will be at the top
-					break;
-				default:
-					startDegree = 0;
 					break;
 			}
 
 			if (linkAmount != 0) {
-				degreeSpacing = Math.floor(360/linkAmount);
+				values.degreeSpacing = Math.floor(360/linkAmount);
 			}
 
 			$scope.bubble1 = false;
@@ -165,23 +139,84 @@ angular.module('histViewer.bubble', ['ngRoute'])
 				$scope.bubble9 = true;
 			}
 
-			var newBubbles = [];
-			var degree = startDegree;
-			var bubbleNum = 0;
-			for (var i = 0; i < linkAmount; i++) {
-				var link = $scope.allItems[i];
-				newBubbles.push({
-					"id":++bubbleNum,
-					"icon":'fa-link',
-					"text": link.who,
-					"class": "deg-" + degree,
-					"linkUrl":"",
-					"eventID": link.id
-				});
-				degree += degreeSpacing;
+			return values;
+		}
+
+		function generateAspectBubbles(eventId, updateHistory) {
+			var currentItem = getEventById(eventId),
+				aspects = ["who", "when", "where"],
+				degreeVals = getDegreeValues(aspects.length),
+				aspectItems = [];
+
+			if (updateHistory) {
+				var itemToAdd = {
+					"num": $scope.history.length,
+					"id": currentItem.id,
+					"name": currentItem.what
+				};
+				$scope.history.push(itemToAdd);
 			}
 
-			$scope.bubbles = newBubbles;
+			//Do work on generating the background picture or some sort of picture
+			var centerDiv = document.getElementById("centerDiv");
+
+			$scope.centerBubbleText = currentItem.what;
+			//$scope.centerBubbleTitle = "WHAT";
+
+			for(var i = 0; i < aspects.length; i++) {
+				var type = aspects[i],
+					aspect = {
+						"id": currentItem.id,
+						"type": type,
+						"title": type.toUpperCase(),
+						"text": currentItem[type],
+						"class": "deg-" + degreeVals.startDegree
+					};
+
+				degreeVals.startDegree += degreeVals.degreeSpacing;
+				aspectItems.push(aspect)
+			}
+
+			$scope.bubbles = aspectItems;
+			$scope.bubbleClick = function (index) {
+				var currentBubble = $scope.bubbles[index];
+				generateAssocBubbles(currentBubble.id, true, currentBubble.type);
+			};
+		}
+
+		function generateAssocBubbles(eventId, updateHistory, type) {
+			var currentItem = getEventById(eventId),
+				assocItems = getAssociatedItems(currentItem,type),
+				degreeVals = getDegreeValues(assocItems.length);
+
+			if (updateHistory) {
+				var itemToAdd = {
+					"num": $scope.history.length,
+					"id": currentItem.id,
+					"name": currentItem[type]
+				};
+				$scope.history.push(itemToAdd);
+			}
+
+			//Do work on generating the background picture or some sort of picture
+			var centerDiv = document.getElementById("centerDiv");
+
+			$scope.centerBubbleText = currentItem[type];
+			//Commented this for now because I just want to focus on what I clicked, and just displaying related bubbles.
+			//$scope.centerBubbleTitle = currentItem.who;
+
+			for(var i = 0; i < assocItems.length; i++) {
+				var link = assocItems[i];
+				link.text = link.what;
+				link.class = "deg-" + degreeVals.startDegree;
+				degreeVals.startDegree += degreeVals.degreeSpacing;
+			}
+
+			$scope.bubbles = assocItems;
+			$scope.bubbleClick = function (index) {
+				var currentBubble = $scope.bubbles[index];
+				generateAspectBubbles(currentBubble.id, true);
+			};
 		}
 
 		if ($scope.allItems.length < 1) {
@@ -189,17 +224,16 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			DatabaseControlService.ensureDataPopulated().then(function () {
 				$scope.allItems = DatabaseControlService.getItems();
 				$(".se-pre-con").fadeOut("slow");
-				generateBubbles(parseInt($routeParams.id), false);
+				generateAspectBubbles(parseInt($routeParams.id), false);
 			});
 		}
 		else {
-			generateBubbles(parseInt($routeParams.id), false);
+			generateAspectBubbles(parseInt($routeParams.id), false);
 		}
 
-		$scope.bubbleClick = function (num) {
-			currentBubble = $scope.bubbles[num-1];
-			debugger;
-			generateBubbles(currentBubble.id, true);
+		$scope.bubbleClick = function (index) {
+			var currentBubble = $scope.bubbles[index];
+			generateAspectBubbles(currentBubble.id, true);
 		};
 
 		//Calculate the font-size for the view
