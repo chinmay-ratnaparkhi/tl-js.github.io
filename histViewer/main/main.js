@@ -395,7 +395,7 @@ angular.module('histViewer.main', ['ngRoute'])
 
 				sectionsNeeded = (maxYear - minYear)/yearGap;
 
-				if (sectionsNeeded < 8) {
+				if (sectionsNeeded < 8 && !inYearGap) {
 					//Expand the timeline
 					switch (yearGap) {
 						case 10:
