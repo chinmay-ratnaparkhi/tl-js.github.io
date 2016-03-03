@@ -44,6 +44,9 @@ angular.module('histViewer.main', ['ngRoute'])
 				if (totalTimelineEvents.length < 3) {
 					totalTimelineEvents.push(timelineEvents);
 				}
+				else {
+					totalTimelineEvents.push(timelineEvents);
+				}
 				createTimeline(totalTimelineEvents);
 				$(".se-pre-con").fadeOut("slow"); //Hide the loading spinner
 			});
@@ -201,6 +204,17 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		//This function creates the image and bubble to the left of the timelines
 		function createTimelineImage(centerX, centerY, personName) {
+			var drawSpace = $('#timelineDrawSpace');
+
+			if (centerY + 40 > drawSpace.height()) {
+				var newHeight = drawSpace.height() + 150;
+				drawSpace.height(newHeight);
+				$('#timelineContainer').height(newHeight);
+				$('#viewContainer').height(newHeight);
+				$('#sideBar').height(newHeight);
+				$('#wholeScreen').height(newHeight);
+			}
+
 			var div = $('<div />', {
 				"class": 'timelineImage'
 			});
@@ -229,7 +243,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			div.css('left', centerX - divWidth );
 			div.css('top', centerY - divHeight);
 
-			$("#timelineDrawSpace").append(div);
+			drawSpace.append(div);
 		}
 
 		//This function checks if there are several objects close together that may overlap eachother.
@@ -269,74 +283,30 @@ angular.module('histViewer.main', ['ngRoute'])
 		}
 
 		//This function calculates how much timelines need to be moved right or left in order for them to line up.
-		function calculateEventSeparations(event1, event2, event3) {
-			if (!event2) {
+		function calculateEventSeparations(eventArrays) {
+			if (eventArrays.length < 2) {
 				return;
 			}
 
-			var minDate1, minDate2, minDate;
+			var minDates = [];
+			var returnArr = [];
+			var minDate = 9999;
 
-			if (event3) {
-				var minDate3;
-
-				minDate1 = getMinDate(event1);
-				minDate2 = getMinDate(event2);
-				minDate3 = getMinDate(event3);
-
-				if (minDate1 < minDate2) {
-					if (minDate1 < minDate3) {
-						minDate = minDate1;
-					}
-					else {
-						minDate = minDate3;
-					}
-				}
-				else {
-					if (minDate2 < minDate3) {
-						minDate = minDate2;
-					}
-					else {
-						minDate = minDate3;
-					}
-				}
-
-				if (minDate.year() % 2 == 1) {
-					minDate = minDate.subtract(1, 'years');
-				}
-
-				return [
-					{
-						"yearDiff": (minDate1.year() - minDate.year())
-					},{
-						"yearDiff": (minDate2.year() - minDate.year())
-					},{
-						"yearDiff": (minDate3.year() - minDate.year())
-					}
-				];
+			for (var i in eventArrays) {
+				minDates.push(getMinDate(eventArrays[i]).year());
 			}
-			else {
-				minDate1 = getMinDate(event1);
-				minDate2 = getMinDate(event2);
 
-				if (minDate1 < minDate2) {
-					minDate = minDate1;
+			for (var i in minDates) {
+				if (minDate > minDates[i]) {
+					minDate = minDates[i];
 				}
-				else {
-					minDate = minDate2;
-				}
-
-				if (minDate.year() % 2 == 1) {
-					minDate = minDate.subtract(1, 'years');
-				}
-
-				return [
-					{
-						"yearDiff": (minDate1.year() - minDate.year())
-					},{
-						"yearDiff": (minDate2.year() - minDate.year())
-					}
-				];
 			}
+
+			for (var i in minDates) {
+				returnArr.push({"yearDiff": (minDates[i] - minDate)});
+			}
+
+			return returnArr;
 		}
 
 		//This function generates the timeline. It calls most other functions.
@@ -346,22 +316,12 @@ angular.module('histViewer.main', ['ngRoute'])
 				var cont = $("#timelineContainer");
 				var viewWidth = cont.width();
 				var viewHeight = cont.height();
-				var switchNum = (location ? location : 2);
+				var switchNum = (location ? location : 1);
 				var midlineHeight;
-				switch(switchNum) {
-					case 1:
-						midlineHeight = viewHeight / 4;
-						break;
-					case 2:
-						midlineHeight = viewHeight / 2;
-						break;
-					case 3:
-						midlineHeight = 3 *(viewHeight / 4);
-						break;
-					default:
-						midlineHeight = viewHeight / 2;
-						break;
-				}
+
+				console.log(switchNum);
+
+				midlineHeight = switchNum * 185;
 
 				//Calculate how many sections of 10 years are needed.
 				var minDate = getMinDate(events);
@@ -437,7 +397,7 @@ angular.module('histViewer.main', ['ngRoute'])
 				}
 
 				//Create a div for the timeline
-				var timelineSpace = '<div id="timelineDrawSpace" class="timelineDrawSpace" style="width:' + (viewWidth - 110) + 'px"><div id="scrolling-timeline" class="scrolling-timeline" style="width:' + ((sectionsNeeded * 120) + (2 * blankAreaOnSideOfTimeline)) + 'px"></div></div>';
+				var timelineSpace = '<div id="timelineDrawSpace" class="timelineDrawSpace" style="width:' + (viewWidth - 110) + 'px"><div id="scrolling-timeline" class="scrolling-timeline" style="width:' + ((sectionsNeeded * 120) + (2 * 40)) + 'px"></div></div>';
 
 				cont.append(timelineSpace);
 
@@ -467,25 +427,12 @@ angular.module('histViewer.main', ['ngRoute'])
 
 			}
 			else {
-				if (totalEvents.length == 2) {
-					var event1 = totalEvents[0];
-					var event2 = totalEvents[1];
+				var values = calculateEventSeparations(totalEvents);
 
-					var values = calculateEventSeparations(event1, event2);
-
-					createTimeline([event1], 2, event1[0].who, 120 * Math.floor(values[0].yearDiff/2), 2);
-					createTimeline([event2], 1, event2[0].who, 120 * Math.floor(values[1].yearDiff/2), 2);
-				}
-				else {
-					var event1 = totalEvents[0];
-					var event2 = totalEvents[1];
-					var event3 = totalEvents[2];
-
-					var values = calculateEventSeparations(event1, event2, event3);
-
-					createTimeline([event1], 2, event1[0].who, 120 * Math.floor(values[0].yearDiff/2), 2);
-					createTimeline([event2], 1, event2[0].who, 120 * Math.floor(values[1].yearDiff/2), 2);
-					createTimeline([event3], 3, event3[0].who, 120 * Math.floor(values[2].yearDiff/2), 2);
+				for (var i in values) {
+					var a = [];
+					a.push(totalEvents[i]);
+					createTimeline(a, parseInt(i)+1, totalEvents[i][0].who, (120 * Math.floor(values[i].yearDiff/2)), 2);
 				}
 			}
 		}
