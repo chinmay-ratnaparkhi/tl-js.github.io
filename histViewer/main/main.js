@@ -121,8 +121,28 @@ angular.module('histViewer.main', ['ngRoute'])
 			var percentDistBetween = ((momentEvent - momentMin)/(momentMax - momentMin));
 			var xPos = blankAreaOnSideOfTimeline + (120 * sectionsSkipped) + (120 * percentDistBetween);
 
-			var div = '<div class="eventCircle" id="event-' + numberShownEvents + '" style="top:' + (timelineHeight - 6) + 'px;left:' + (xPos - 7.5) + 'px;">';
+			var topVal = timelineHeight - 6;
+			var left = xPos - 7.5;
 
+			$scope.currentEventLocation = {
+				"top": topVal,
+				"left": left
+			};
+
+			$(".eventCircle").each(function(i, obj) {
+				var objPos = $(obj).position();
+				if (objPos.top == $scope.currentEventLocation.top) {
+					if (Math.abs(objPos.left - $scope.currentEventLocation.left) <= 15 ) {
+						$(obj).css("background-color", "red");
+						//Will need to do something so that we create an event circle that has several events in it.
+						if (Math.abs(objPos.left - $scope.currentEventLocation.left) <= 5) {//Temporary fix for extremely close events
+							$(obj).css("left", objPos.left + 5);
+						}
+					}
+				}
+			});
+
+			var div = '<div class="eventCircle" id="event-' + numberShownEvents + '" style="top:' + topVal + 'px;left:' + left + 'px;">';
 			timelineEventLocations.push({numberShownEvents, xPos, timelineHeight, event});
 
 			var innerdiv = '<div class="timelinePopup" ';
