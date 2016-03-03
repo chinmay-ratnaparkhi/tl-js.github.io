@@ -35,6 +35,11 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		var heightDynamicalyUpdated = false;
 
+		function triggerClickScroll() {
+			debiki.Utterscroll.enable({
+				scrollstoppers: '.CodeMirror, .ui-resizable-handle' });
+		}
+
 		$scope.generateTimeline = function (person) {
 			$("#timelineContainer").empty(); //Delete any other timelines that are currently shown.
 			timelineEventLocations = [];
@@ -50,6 +55,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			});
 		};
 
+		//This function is used with the checkHistory function. Because it is going to be called when returning from somewhere then we need to wait for everything to load.
 		var waitForRenderAndDoSomething = function() {
 			if($http.pendingRequests.length > 0) {
 				$timeout(waitForRenderAndDoSomething); // Wait for all templates to be loaded
@@ -64,6 +70,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			}
 		};
 
+		//This function is called whenever the page is loaded. It checks if there is a point that the page needs to return to.
 		function checkHistory() {
 			var hist = HistoryService.getTimelineHistory();
 			if (hist.length) {
@@ -491,6 +498,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			$scope.allItems = DatabaseControlService.getItems();
 			generatePeople();
 			checkHistory();
+			triggerClickScroll();
 			$(".se-pre-con").fadeOut("slow");
 		});
 
