@@ -33,6 +33,8 @@ angular.module('histViewer.main', ['ngRoute'])
 		var timelineEventLocations = [];
 		var numberShownEvents = 0;
 
+		var heightDynamicalyUpdated = false;
+
 		$scope.generateTimeline = function (person) {
 			$("#timelineContainer").empty(); //Delete any other timelines that are currently shown.
 			timelineEventLocations = [];
@@ -41,16 +43,26 @@ angular.module('histViewer.main', ['ngRoute'])
 			$scope.person = person;
 			DatabaseControlService.queryForWho(person).then(function () {//Load the data from the person selected
 				var timelineEvents = DatabaseControlService.getQueryItems();
-				if (totalTimelineEvents.length < 3) {
-					totalTimelineEvents.push(timelineEvents);
-				}
-				else {
-					totalTimelineEvents.push(timelineEvents);
-				}
+				totalTimelineEvents.push(timelineEvents);
+				removePersons(timelineEvents);
 				createTimeline(totalTimelineEvents);
 				$(".se-pre-con").fadeOut("slow"); //Hide the loading spinner
 			});
 		};
+
+		//This function is used to add people back into the listing on the left.
+		function addPersons(name) {
+			$scope.people.push(name);
+			$scope.$apply();
+		}
+
+		//This function is used to remove the person's name from the listing on the left so that they cannot be selected twice.
+		function removePersons(event) {
+			var index = $scope.people.indexOf(event[0].who);
+			if (index > -1) {
+				$scope.people.splice(index, 1);
+			}
+		}
 
 		//This function is called whenever a timeline event is clicked. The item variable is the html element clicked (div)
 		function eventClick (item) {
@@ -183,6 +195,8 @@ angular.module('histViewer.main', ['ngRoute'])
 		function removeFromTotalEvents (name) {
 			var newTotalEvents = [];
 
+			addPersons(name);
+
 			for (var i in totalTimelineEvents) {
 				if (totalTimelineEvents[i][0].who != name) {
 					newTotalEvents.push(totalTimelineEvents[i]);
@@ -207,6 +221,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			var drawSpace = $('#timelineDrawSpace');
 
 			if (centerY + 40 > drawSpace.height()) {
+				heightDynamicalyUpdated = true;
 				var newHeight = drawSpace.height() + 150;
 				drawSpace.height(newHeight);
 				$('#timelineContainer').height(newHeight);
@@ -318,8 +333,6 @@ angular.module('histViewer.main', ['ngRoute'])
 				var viewHeight = cont.height();
 				var switchNum = (location ? location : 1);
 				var midlineHeight;
-
-				console.log(switchNum);
 
 				midlineHeight = switchNum * 185;
 
@@ -478,6 +491,9 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		//Function that does the above section whenever the screen is resized.
 		window.onresize = function () {
+			if (heightDynamicalyUpdated) {
+				return;
+			}
 			height = html.clientHeight;
 			width = html.clientWidth;
 

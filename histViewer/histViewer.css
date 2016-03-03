@@ -93,6 +93,10 @@ body, html {
 	font-size: 65px;
 }
 
+.timelineImage:hover {
+	cursor: pointer;
+}
+
 .timelineName {
 	font-size: 12px;
 	margin-top: 8px;
