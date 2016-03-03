@@ -25,7 +25,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		}
 	})
 
-	.controller('MainCtrl', ['$scope', 'DatabaseControlService', '$location', function ($scope, DatabaseControlService, $location) {
+	.controller('MainCtrl', ['$scope', 'DatabaseControlService', 'HistoryService', '$location', '$timeout', '$http', function ($scope, DatabaseControlService, HistoryService, $location, $timeout, $http) {
 		$scope.currentView = 'timeline';
 
 		var totalTimelineEvents = [];
@@ -50,6 +50,28 @@ angular.module('histViewer.main', ['ngRoute'])
 			});
 		};
 
+		var waitForRenderAndDoSomething = function() {
+			if($http.pendingRequests.length > 0) {
+				$timeout(waitForRenderAndDoSomething); // Wait for all templates to be loaded
+			} else {
+				for (var i in totalTimelineEvents) {
+					removePersons(totalTimelineEvents[i]);
+				}
+				if (totalTimelineEvents.length == 1) {
+					$scope.person = totalTimelineEvents[0][0].who;
+				}
+				createTimeline(totalTimelineEvents);
+			}
+		};
+
+		function checkHistory() {
+			var hist = HistoryService.getTimelineHistory();
+			if (hist.length) {
+				totalTimelineEvents = hist;
+				$timeout(waitForRenderAndDoSomething); // Waits for first digest cycle
+			}
+		}
+
 		//This function is used to add people back into the listing on the left.
 		function addPersons(name) {
 			$scope.people.push(name);
@@ -68,6 +90,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		function eventClick (item) {
 			var itemId = item.currentTarget.id;
 			var itemNum = parseInt(itemId.substr(itemId.indexOf("-") + 1));
+			HistoryService.setTimelineHistory(totalTimelineEvents);
 			$location.path('/bubble/' + timelineEventLocations[itemNum-1].event.id);
 			$scope.$apply();
 		}
@@ -467,6 +490,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.allItems = DatabaseControlService.getItems();
 			generatePeople();
+			checkHistory();
 			$(".se-pre-con").fadeOut("slow");
 		});
 

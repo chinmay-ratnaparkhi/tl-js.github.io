@@ -17,6 +17,10 @@
 	<div id="control-container" class="control-container">
 		<h1 ng-if="history.length" class="history-title">History</h1>
 
+		<div class="back-button" ng-click="goBackToTimeline()">
+			<i class="fa fa-backward"></i> To Timeline
+		</div>
+
 		<div ng-if="history.length" class="back-button" ng-click="goBack()">
 			<i class="fa fa-backward"></i> Go Back
 		</div>

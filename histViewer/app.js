@@ -5,6 +5,7 @@ angular.module('histViewer', [
 	'histViewer.main',
 	'histViewer.bubble',
 	'histViewer.service',
+	'histViewer.historyService',
 	'histViewerMap'
 ])
 	.config(['$routeProvider', function ($routeProvider) {

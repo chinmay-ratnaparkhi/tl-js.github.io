@@ -14,6 +14,10 @@ angular.module('histViewer.bubble', ['ngRoute'])
 		//All the events should still be stored in the service.
 		$scope.allItems = DatabaseControlService.getItems();
 
+		$scope.goBackToTimeline = function () {
+			$location.path('/main');
+		};
+
 		var currentItem;
 		$scope.history = [];
 		var currentBubble;
