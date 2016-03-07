@@ -4,7 +4,7 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 
 	.config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.when('/detail/:id', {
-			templateUrl: 'detail/detail.html',
+			templateUrl: 'detail.html',
 			controller: 'DetailCtrl'
 		});
 	}])
