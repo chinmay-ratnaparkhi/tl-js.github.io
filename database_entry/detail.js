@@ -4,7 +4,7 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 
 	.config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.when('/detail/:id', {
-			templateUrl: 'detail.html',
+			templateUrl: 'detail/detail.html',
 			controller: 'DetailCtrl'
 		});
 	}])
@@ -16,6 +16,7 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 		//Make sure that the initial data is populated.
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.item = DatabaseControlService.getItemByIndex(itemId);
+			$scope.when = new Date($scope.item.when);
 			$(".se-pre-con").fadeOut("slow");
 		});
 
@@ -24,22 +25,31 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 		};
 
 		$scope.updateItem = function (id) {
-			if (!$scope.item.who || !$scope.item.what || !$scope.item.when || !$scope.item.where || !$scope.item.ranking) {
+			if (!$scope.item.who || !$scope.item.what || !$scope.when || !$scope.item.where) {
 				return;
 			}
 
-			var when = $scope.item.when.toDateString();
+			if (!$scope.item.ranking) {
+				$scope.item.ranking = 1;
+			}
 
-			//TODO: Instead of replacing all ' with / try encodeURIComponent and then decodeURIComponent when it's used
+			if (!$scope.item.ref) {
+				$scope.item.ref = "";
+			}
+
+			var when = $scope.when.toDateString();
+
 			var updateItem = {
-				who: $scope.item.who.replace("'", "/"),
-				what: $scope.item.what.replace("'", "/"),
+				who: $scope.item.who,
+				what: $scope.item.what,
 				when: when,
-				where: $scope.item.where.replace("'", "/"),
-				ranking: $scope.item.ranking
+				where: $scope.item.where,
+				ranking: $scope.item.ranking,
+				ref: $scope.item.ref
 			};
 
 			DatabaseControlService.updateItem(id, updateItem).then(function (data) {
+				console.log(data);
 				alert("Successfully updated.");
 			});
 		};

@@ -70,12 +70,12 @@ angular.module('databaseEntry.service', ['ngRoute'])
 					what:newItem.what,
 					when:newItem.when,
 					where:newItem.where,
-					ranking:newItem.ranking
+					ranking:newItem.ranking,
+					ref:newItem.ref
 				}
 			});
 
 			request.success(function (data) {
-				console.log(data);
 				populateAllItems();
 			});
 
@@ -93,7 +93,8 @@ angular.module('databaseEntry.service', ['ngRoute'])
 					what:updatedItem.what,
 					when:updatedItem.when,
 					where:updatedItem.where,
-					ranking:updatedItem.ranking
+					ranking:updatedItem.ranking,
+					ref:updatedItem.ref
 				}
 			});
 
@@ -161,15 +162,36 @@ angular.module('databaseEntry.service', ['ngRoute'])
 			}
 		};
 
+		var writtenQuery = function (query) {
+			var request = $http({
+				method: "post",
+				url: apiUrl + "inputQuery",
+				data: {
+					query:query
+				}
+			});
+
+			request.success(function (data) {
+				queryData = data;
+			});
+
+			request.error(function (err) {
+				alert("Error connecting to the server.");
+			});
+
+			return request;
+		};
+
 		return {
-			addItem:        addItem,
-			getItems:       getItems,
-			getQueryItems: getQueryItems,
-			removeItem:     removeItem,
-			getItemByIndex: getItemByIndex,
-			updateItem:     updateItem,
-			ensureDataPopulated: ensureDataPopulated,
-			queryForWho: queryForWho,
-			queryForWhat: queryForWhat
+			addItem:              addItem,
+			getItems:             getItems,
+			getQueryItems:        getQueryItems,
+			removeItem:           removeItem,
+			getItemByIndex:       getItemByIndex,
+			updateItem:           updateItem,
+			ensureDataPopulated:  ensureDataPopulated,
+			queryForWho:          queryForWho,
+			queryForWhat:         queryForWhat,
+			writtenQuery:         writtenQuery
 		};
 	}]);

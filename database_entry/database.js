@@ -16,27 +16,47 @@ angular.module('databaseEntry.view', ['ngRoute'])
 		});
 
 		$scope.get = function () {
-			console.log(DatabaseControlService.getTasks());
+			//console.log(DatabaseControlService.getTasks());
 		};
 
 		$scope.add = function () {
-			if (!$scope.who || !$scope.what || !$scope.when || !$scope.where || !$scope.significance) {
+			if (!$scope.who || !$scope.what || !$scope.when || !$scope.where) {
 				return;
+			}
+
+			if (!$scope.ranking) {
+				$scope.ranking = 1;
+			}
+
+			if (!$scope.ref) {
+				$scope.ref = "";
+			}
+
+			var partiallySupported = false;
+
+			if ($("#databaseWhen").prop('type') != 'date') {
+				$scope.when = new Date($scope.when);
+				partiallySupported = true;
 			}
 
 			var when = $scope.when.toDateString();
 
-			//TODO: Instead of replacing all ' with / try encodeURIComponent and then decodeURIComponent when it's used
 			var addItem = {
-				who: $scope.who.replace("'", "/"),
-				what: $scope.what.replace("'", "/"),
+				who: $scope.who,
+				what: $scope.what,
 				when: when,
-				where: $scope.where.replace("'", "/"),
-				ranking: $scope.significance
+				where: $scope.where,
+				ranking: $scope.ranking,
+				ref: $scope.ref
 			};
 
 			DatabaseControlService.addItem(addItem).then(function () {
-				alert("Success!");
+				if (partiallySupported) {
+					alert("Data successfully added although date is only partially supported. Please go to the list to verify that it saved correctly.");
+				}
+				else {
+					alert("Success!");
+				}
 			});
 		};
 

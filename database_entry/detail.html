@@ -8,7 +8,7 @@
 		<textarea ng-model="item.what" class="form-control" rows="4" placeholder="Did What" required></textarea>
 	</div>
 	<div class="form-group">
-		<input ng-model="item.when" type="datetime-local" class="form-control" id="databaseWhen" placeholder="When" required>
+		<input ng-model="when" type="date" class="form-control" id="databaseWhen" placeholder="When" required>
 	</div>
 	<!--
 	TODO: Convert this to use location selector
@@ -18,13 +18,8 @@
 		<textarea ng-model="item.where" class="form-control" rows="4" placeholder="And Where" required></textarea>
 	</div>
 	<div class="form-group">
-		<select ng-model="item.ranking" class="form-control" required>
-			<option value="" disabled selected>Significance of Event</option>
-			<option value=1>Trivial</option>
-			<option value=2>Average</option>
-			<option value=3>Significant</option>
-		</select>
+		<input ng-model="item.ref" type="text" class="form-control" id="databaseRef" placeholder="Reference Link (Optional)">
 	</div>
 	<button ng-click="updateItem(item.id)" type="submit" class="btn btn-primary btn-block">Update Item</button>
-	<button ng-click="deleteItem(item.id)" type="submit" class="btn btn-primary btn-block">Delete Item</button>
+	<button ng-click="deleteItem(item.id)" type="button" class="btn btn-primary btn-block">Delete Item</button>
 </form>
