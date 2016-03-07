@@ -49,7 +49,6 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 			};
 
 			DatabaseControlService.updateItem(id, updateItem).then(function (data) {
-				console.log(data);
 				alert("Successfully updated.");
 			});
 		};
