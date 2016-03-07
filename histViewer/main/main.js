@@ -17,6 +17,8 @@ angular.module('histViewer.main', ['ngRoute'])
 		};
 	})
 
+	//Testing
+
 	.directive('bubble', function () {
 		return {
 			restrict: "E",
