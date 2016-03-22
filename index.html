@@ -1,12 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>
-<html lang="en" ng-app="tljs" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>
-<html lang="en" ng-app="tljs" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>
-<html lang="en" ng-app="tljs" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html lang="en" ng-app="tljs" class="no-js"> <!--<![endif]-->
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,36 +10,58 @@
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
 	<link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="index.css">
 	<link href='https://fonts.googleapis.com/css?family=Exo' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/main.css">
 	<script src="includes/moment.js"></script>
 	<script src="includes/require.min.js"></script>
 </head>
-<body>
+<body style="text-align: center;width:50%;">
 
-<nav>
-	<ul>
-		<li><a href="#/home">Home</a></li>
-		<li><a href="#/about">About</a></li>
-		<li><a href="#/blog">Blog</a></li>
-	</ul>
-</nav>
+<h1>HistViewer is ready for you.</h1>
+<p class="postFade">
+	Michael Thornbrugh, Zach Zastrow, Sam Sudekum, Lei Wang and Chinmay Ratnaparkhi
+	<br/>
+	March 23, 2016
+</p>
 
-<div ng-view></div>
+<h1 class="sectionHead">Timeline View</h1>
+<p class="paragraphText">
+	The timeline view that we created was the view that we created to be our "core" view.
+	From this view you are able to select people from the left and to display their timelines.
+	It is then from that timeline that you are able to navigate to our other views which will let you research other aspects of the person you are looking at.
+</p>
 
-<footer>
-	<ul>
-		<li><a href="mailto:mpthornbrugh@gmail.com">email</a></li>
-		<li><a href="https://github.com/tl-js">github.com/tl-js</a></li>
-	</ul>
-</footer>
+<h1 class="sectionHead">Bubble View</h1>
+<p class="paragraphText">
+	The bubble view is a view created by us that we pictured to be the next best thing in the historical data visualization.
+	This view takes a very basic model for anything historical (who, what, when and where) and is able to expand that into a web of other information.
+	We essentially would compare this view to something like the Youtube autoplay feature.
+</p>
+<p class="paragraphText">
+	When you select an event you are then given some options that are in some way related to the event that is currently in focus.
+	You are then able to look into those events which will repeat the process in a never ending loop (If you so choose).
+	You are also able to go back to the timeline view to restart this view or you can navigate to the map view to get a different perspective.
+</p>
 
-<script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/angular-route/angular-route.js"></script>
-<script src="app.js"></script>
-<script src="home/home.js"></script>
-<script src="about/about.js"></script>
-<script src="blog/blog.js"></script>
-<script src="blog/detail/blog.detail.js"></script>
+<h1 class="sectionHead">Map View</h1>
+<p class="paragraphText">
+	Our map view was created because we wanted a way to show events in a different light.
+	There are many different pieces of software that are already on the market that allow you to view dates and events easily, but we wanted a way to see how some of the locations for events coorelate.
+	If you were for instance looking at an event that happened in Lawrence, Kansas you may want to look to see if there are any other events that also happened around that area.
+</p>
+<p class="paragraphText">
+	This view will also eventually allow us to take a person that we are interested in and be able to see how their lives played out over time.
+	We will be able to essentially get an interactive video biography of any person that we so choose.
+</p>
+
+<h1 class="sectionHead">Futurecast</h1>
+<p class="paragraphText">
+	Later on down the road we have plans to not only improve upon the performance of the project, but to also make it easier for everyone to use.
+	We plan on eventually allowing for alternative database sets to be used as opposed to only allowing our own.
+	This will be done through either a typical .csv file or other similarly formatted file that we will then ask for upon the start of the software.
+	We also plan on improving how the bubble view selects similar events.
+</p>
+
 </body>
 </html>
