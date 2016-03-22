@@ -10,3 +10,16 @@
 .postFade {
 	color:gray;
 }
+
+.titleClick {
+	color:inherit;
+}
+
+.titleClick:hover {
+	color:inherit;
+}
+
+.postImage {
+	width:100%;
+	margin:.2em;
+}
