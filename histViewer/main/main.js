@@ -177,7 +177,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		}
 
 		//This function draws the lines for the timeline. It has the ability to draw lines between any two given points.
-		function DrawLine(x1, y1, x2, y2) {
+		function DrawLine(x1, y1, x2, y2, lineWidth) {
 			if (y1 < y2) {
 				var pom = y1;
 				y1 = y2;
@@ -208,7 +208,12 @@ angular.module('histViewer.main', ['ngRoute'])
 
 			var htmlns = "http://www.w3.org/1999/xhtml";
 			var div = document.createElementNS(htmlns, "div");
-			div.setAttribute('style', 'border:2px solid black;width:' + width + 'px;height:0px;-moz-transform:rotate(' + deg + 'deg);-webkit-transform:rotate(' + deg + 'deg);position:absolute;top:' + y + 'px;left:' + x + 'px;');
+			if (lineWidth) {
+				div.setAttribute('style', 'border:' + lineWidth + 'px solid black;width:' + width + 'px;height:0px;-moz-transform:rotate(' + deg + 'deg);-webkit-transform:rotate(' + deg + 'deg);position:absolute;top:' + y + 'px;left:' + x + 'px;');
+			}
+			else {
+				div.setAttribute('style', 'border:2px solid black;width:' + width + 'px;height:0px;-moz-transform:rotate(' + deg + 'deg);-webkit-transform:rotate(' + deg + 'deg);position:absolute;top:' + y + 'px;left:' + x + 'px;');
+			}
 
 			document.getElementById("scrolling-timeline").appendChild(div);
 
@@ -481,6 +486,17 @@ angular.module('histViewer.main', ['ngRoute'])
 				for (var i = 0; i <= sectionsNeeded; i++) {
 					DrawLine((blankAreaOnSideOfTimeline + (120 * i)), (midlineHeight - 20), (blankAreaOnSideOfTimeline + (120 * i)), (midlineHeight + 20));
 					drawText((blankAreaOnSideOfTimeline + (120 * i)), (midlineHeight + 28), "" + (minYear + (yearGap * i)) + "");
+				}
+
+				if (yearGap > 1) {
+					var tickSpacing = 120/yearGap;
+					for (var i = 0; i < sectionsNeeded; i++) {
+						var start = blankAreaOnSideOfTimeline + 120*i;
+						for (var j = 1; j <= yearGap; j++) {
+							var x = start + (tickSpacing * j);
+							DrawLine(x, (midlineHeight - 10), x, (midlineHeight + 10), 1);
+						}
+					}
 				}
 
 				//Draw all of the events.
