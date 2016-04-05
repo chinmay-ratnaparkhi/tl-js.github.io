@@ -10,6 +10,9 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 	}])
 
 	.controller('NewBubbleCtrl', ['$scope', 'DatabaseControlService', '$location', '$routeParams', function ($scope, DatabaseControlService, $location, $routeParams) {
+		//All the events should still be stored in the service.
+		$scope.allItems = DatabaseControlService.getItems();
+
 		var docHeight = 0;
 		var docWidth = 0;
 		var circles = [];
@@ -31,8 +34,28 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 		$(document).ready(function() {
 			docHeight = $(document).height();
 			docWidth = $(document).width();
-			start();
+			if ($scope.allItems.length < 1) {
+				$(".se-pre-con").show();
+				DatabaseControlService.ensureDataPopulated().then(function () {
+					$scope.allItems = DatabaseControlService.getItems();
+					$(".se-pre-con").fadeOut("slow");
+					start();
+				});
+			}
+			else {
+				start();
+			}
 		});
+
+		function createWhoWhatWhenWhereBubbles (parentId) {
+			var parent = circles[parentId];
+			var parentRad = parent.radius;
+			var childRad = parentRad/2;
+			addCircle((parentRad + childRad + 10), parent.x, parent.y, 45, childRad, "aspect", parentId, "Who");
+			addCircle((parentRad + childRad + 10), parent.x, parent.y, 135, childRad, "aspect", parentId, "What");
+			addCircle((parentRad + childRad + 10), parent.x, parent.y, 225, childRad, "aspect", parentId, "When");
+			addCircle((parentRad + childRad + 10), parent.x, parent.y, 315, childRad, "aspect", parentId, "Where");
+		}
 
 		function start () {
 			circles[0] = {
@@ -44,7 +67,7 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				"parent":-1,
 				"text":"Was Born"
 			};
-
+			createWhoWhatWhenWhereBubbles(0);
 			drawCircles();
 		}
 
@@ -118,36 +141,32 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 		function splitCircle (id) {
 			circles[id].hasChild = true;
 			var parentRad = circles[id].radius;
+			var childRad = parentRad/2;
 			var currentX = circles[id].x;
 			var currentY = circles[id].y;
 			switch (circles[id].attr) {
 				case "center":
-					var childRad = parentRad/2;
 					addCircle((parentRad + childRad + 10), currentX, currentY, 45, childRad, "bottomRight", id, "Bonn, Electorate of Cologne");
 					addCircle((parentRad + childRad + 10), currentX, currentY, 135, childRad, "bottomLeft", id, "Was Born");
 					addCircle((parentRad + childRad + 10), currentX, currentY, 225, childRad, "topLeft", id, "Wed Dec 12 1770");
 					addCircle((parentRad + childRad + 10), currentX, currentY, 315, childRad, "topRight", id, "Ludwig van Beethoven");
 					break;
 				case "bottomRight":
-					var childRad = parentRad/2;
 					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test2");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
 					break;
 				case "bottomLeft":
-					var childRad = parentRad/2;
 					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test2");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test3");
 					break;
 				case "topLeft":
-					var childRad = parentRad/2;
 					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test1");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test2");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
 					break;
 				case "topRight":
-					var childRad = parentRad/2;
 					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test2");
 					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
@@ -156,7 +175,7 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			drawCircles();
 		}
 
-		function hideChildren (id) {
+		function hideChildren (id, noRedraw) {
 			var remove = [];
 			for (var i = 0; i < circles.length; i++) {
 				if (circles[i].parent == id) {
@@ -171,7 +190,17 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				circles.splice(remove[i], 1);
 			}
 			circles[id].hasChild = false;
+			if (noRedraw) {
+				return;
+			}
 			drawCircles();
+		}
+
+		function replaceWhoWhatWhenWhere(id) {
+			var parent = circles[circles[id].parent];
+			var typeOfCheck = circles[id].text;
+			hideChildren(circles[id].parent, true);
+			debugger;
 		}
 
 		function drawCircles () {
@@ -194,11 +223,17 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				}
 				else {
 					$(x[0]).on("click", function () {
-						if (circles[parseInt($(this)[0].id)].hasChild) {
-							hideChildren(parseInt($(this)[0].id));
+						var id = parseInt($(this)[0].id);
+						if (circles[id].attr == "aspect") {
+							replaceWhoWhatWhenWhere(id);
 						}
 						else {
-							splitCircle(parseInt($(this)[0].id));
+							if (circles[id].hasChild) {
+								hideChildren(id);
+							}
+							else {
+								splitCircle(id);
+							}
 						}
 					});
 					drawTextDiv(circles[i].x, circles[i].y, circles[i].radius, circles[i].text);

@@ -25,9 +25,11 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 		};
 
 		$scope.updateItem = function (id) {
-			if (!$scope.item.who || !$scope.item.what || !$scope.when || !$scope.item.where) {
+			if (!$scope.item.who || !$scope.item.action || !$scope.when || !$scope.item.where) {
 				return;
 			}
+
+			$scope.item.who = $scope.item.who.toUpperCase();
 
 			if (!$scope.item.ranking) {
 				$scope.item.ranking = 1;
@@ -37,13 +39,24 @@ angular.module('databaseEntry.detail', ['ngRoute'])
 				$scope.item.ref = "";
 			}
 
-			var when = $scope.when.toDateString();
+			if (!$scope.item.compliment1) {
+				$scope.item.compliment1 = "";
+			}
+
+			if (!$scope.item.compliment2) {
+				$scope.item.compliment2 = "";
+			}
+
+			var what = $scope.item.action + " " + $scope.item.compliment1 + " " + $scope.item.compliment2;
 
 			var updateItem = {
 				who: $scope.item.who,
-				what: $scope.item.what,
-				when: when,
+				what: what,
+				when: $scope.item.when,
 				where: $scope.item.where,
+				action: $scope.item.action,
+				compliment1: $scope.item.compliment1,
+				compliment2: $scope.item.compliment2,
 				ranking: $scope.item.ranking,
 				ref: $scope.item.ref
 			};

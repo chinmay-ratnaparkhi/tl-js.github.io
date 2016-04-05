@@ -4,7 +4,7 @@
 			<i class="fa fa-backward"></i> To Timeline
 		</div>
 		<h1 ng-if="circleHistory.length > 0">History</h1>
-		<div ng-repeat="history in circleHistory">
+		<div ng-repeat="history in circleHistory" style="font-size:20px;">
 			<div class="list-item" ng-click="goToCircleHistory(history, $index)">
 				{{history[0].text}}
 			</div>

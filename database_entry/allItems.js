@@ -15,6 +15,17 @@ angular.module('databaseEntry.list', ['ngRoute'])
 		//Make sure that the initial data is populated.
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.items = DatabaseControlService.getItems();
+
+			var str = "";
+			for (var i = 0; i < $scope.items.length; i++) {
+				var item = $scope.items[i];
+				str += "Who: " + item.who + " ";
+				str += "What: " + item.what + " ";
+				str += "When: " + item.when + " ";
+				str += "Where: " + item.where + "\n";
+			}
+			console.log(str);
+
 			$(".se-pre-con").fadeOut("slow");
 		});
 
