@@ -69,6 +69,30 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 					addCircle((parentRad + childRad + 5), parent.x, parent.y, 225, childRad, "aspect-when", parentId, parentEvent.when);
 					addCircle((parentRad + childRad + 5), parent.x, parent.y, 315, childRad, "aspect-where", parentId, parentEvent.where);
 					break;
+				case "bottomRight":
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 315, childRad, "aspect-who", parentId, parentEvent.who);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 15, childRad, "aspect-what", parentId, parentEvent.what);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 75, childRad, "aspect-when", parentId, parentEvent.when);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 135, childRad, "aspect-where", parentId, parentEvent.where);
+					break;
+				case "bottomLeft":
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 225, childRad, "aspect-who", parentId, parentEvent.who);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 165, childRad, "aspect-what", parentId, parentEvent.what);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 105, childRad, "aspect-when", parentId, parentEvent.when);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 45, childRad, "aspect-where", parentId, parentEvent.where);
+					break;
+				case "topLeft":
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 315, childRad, "aspect-who", parentId, parentEvent.who);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 255, childRad, "aspect-what", parentId, parentEvent.what);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 195, childRad, "aspect-when", parentId, parentEvent.when);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 135, childRad, "aspect-where", parentId, parentEvent.where);
+					break;
+				case "topRight":
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 225, childRad, "aspect-who", parentId, parentEvent.who);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 285, childRad, "aspect-what", parentId, parentEvent.what);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 345, childRad, "aspect-when", parentId, parentEvent.when);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 45, childRad, "aspect-where", parentId, parentEvent.where);
+					break;
 			}
 		}
 
@@ -115,10 +139,10 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			}
 		}
 
-		function addCircle (distance, curX, curY, angle, newRad, attribute, parentNum, text) {
+		function addCircle (distance, curX, curY, angle, newRad, attribute, parentNum, text, eventId) {
 			var moveX = getX(distance, angle);
 			var moveY = getY(distance, angle);
-			circles.push({
+			var obj = {
 				"id":circles.length,
 				"x":curX + moveX,
 				"y":curY + moveY,
@@ -127,7 +151,11 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				"parent":parentNum,
 				"text":text,
 				"hasChild":false
-			});
+			};
+			if (eventId) {
+				obj.eventId = eventId;
+			}
+			circles.push(obj);
 		}
 
 		function zoomCircle (id) {
@@ -138,7 +166,14 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				}
 			}
 			//Now newCircArr is the circle above the magnification spot. Need to set this as the center bubble
-
+			var event = getEventById(newCircArr[0].eventId);
+			var midText = "";
+			if (event.who == newCircArr[0].text) {
+				midText = newCircArr[0].text;
+			}
+			else {
+				midText = event.who + "<br><br>" + newCircArr[0].text;
+			}
 			newCircArr[0] = {
 				"id":0,
 				"x":docWidth/2,
@@ -146,8 +181,9 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				"radius":Math.min(docHeight, docWidth)/5,
 				"attr": "center",
 				"parent":-1,
-				"text":newCircArr[0].text,
-				"hasChild":false
+				"text":midText,
+				"hasChild":false,
+				"eventId":newCircArr[0].eventId
 			};
 			var event = getEventById(circles[0].eventId);
 			circles[0].historyText = event.who;
@@ -164,31 +200,7 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			var childRad = parentRad/2;
 			var currentX = circles[id].x;
 			var currentY = circles[id].y;
-			switch (circles[id].attr) {
-				case "center":
-					createWhoWhatWhenWhereBubbles(0);
-					break;
-				case "bottomRight":
-					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test2");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
-					break;
-				case "bottomLeft":
-					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test2");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test3");
-					break;
-				case "topLeft":
-					addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", id, "test1");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test2");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
-					break;
-				case "topRight":
-					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", id, "test2");
-					addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", id, "test3");
-					break;
-			}
+			createWhoWhatWhenWhereBubbles(id);
 			drawCircles();
 		}
 
@@ -286,23 +298,70 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			var currentY = parent.y;
 			var parId = parent.id;
 			parent.hasChild = true;
-			if (parent.attr == "center") {
-				associated = getAssociatedItems(parent, typeOfCheck, 4);
-				if (associated.length > 0) {
-					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[0][typeOfCheck.toLowerCase()]);
-					if (associated.length > 1) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[2][typeOfCheck.toLowerCase()]);
-						if (associated.length > 2) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[1][typeOfCheck.toLowerCase()]);
-							if (associated.length > 3) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[3][typeOfCheck.toLowerCase()]);
+			switch (parent.attr) {
+				case "center":
+					associated = getAssociatedItems(parent, typeOfCheck, 4);
+					if (associated.length > 0) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						if (associated.length > 1) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							if (associated.length > 2) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								if (associated.length > 3) {
+									addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[3][typeOfCheck.toLowerCase()], associated[3].id);
+								}
 							}
 						}
 					}
-				}
-			}
-			else {
-				associated = getAssociatedItems(parent, typeOfCheck, 3);
+					break;
+				case "bottomRight":
+					associated = getAssociatedItems(parent, typeOfCheck, 3);
+					if (associated.length > 0) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						if (associated.length > 1) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							if (associated.length > 2) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+							}
+						}
+					}
+					break;
+				case "bottomLeft":
+					associated = getAssociatedItems(parent, typeOfCheck, 3);
+					if (associated.length > 0) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						if (associated.length > 1) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							if (associated.length > 2) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+							}
+						}
+					}
+					break;
+				case "topLeft":
+					associated = getAssociatedItems(parent, typeOfCheck, 3);
+					if (associated.length > 0) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						if (associated.length > 1) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							if (associated.length > 2) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+							}
+						}
+					}
+					break;
+				case "topRight":
+					associated = getAssociatedItems(parent, typeOfCheck, 3);
+					if (associated.length > 0) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 215, childRad, "topLeft", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						if (associated.length > 1) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							if (associated.length > 2) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+							}
+						}
+					}
+					break;
 			}
 			drawCircles();
 		}
