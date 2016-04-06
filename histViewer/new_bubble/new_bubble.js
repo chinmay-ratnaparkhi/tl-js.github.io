@@ -17,14 +17,24 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 		var docWidth = 0;
 		var circles = [];
 		var canvas = $("#svgCanvas");
-
 		$scope.circleHistory = [];
+
+		function getEventById (id) {
+			for (var i in $scope.allItems) {
+				if ($scope.allItems[i].id == id) {
+					return $scope.allItems[i];
+				}
+			}
+			return {}; //Should never hit this case
+		}
 
 		$scope.goBackToTimeline = function () {
 			$location.path('/main');
 		};
 
 		$scope.goToCircleHistory = function(history, index) {
+			var event = getEventById(circles[0].eventId);
+			circles[0].historyText = event.who;
 			$scope.circleHistory.push(circles);
 			$scope.circleHistory.splice(index, 1);
 			circles = history;
@@ -51,13 +61,19 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			var parent = circles[parentId];
 			var parentRad = parent.radius;
 			var childRad = parentRad/2;
-			addCircle((parentRad + childRad + 10), parent.x, parent.y, 45, childRad, "aspect", parentId, "Who");
-			addCircle((parentRad + childRad + 10), parent.x, parent.y, 135, childRad, "aspect", parentId, "What");
-			addCircle((parentRad + childRad + 10), parent.x, parent.y, 225, childRad, "aspect", parentId, "When");
-			addCircle((parentRad + childRad + 10), parent.x, parent.y, 315, childRad, "aspect", parentId, "Where");
+			var parentEvent = getEventById(parent.eventId);
+			switch (parent.attr) {
+				case "center":
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 45, childRad, "aspect-who", parentId, parentEvent.who);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 135, childRad, "aspect-what", parentId, parentEvent.what);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 225, childRad, "aspect-when", parentId, parentEvent.when);
+					addCircle((parentRad + childRad + 5), parent.x, parent.y, 315, childRad, "aspect-where", parentId, parentEvent.where);
+					break;
+			}
 		}
 
 		function start () {
+			var event = getEventById($routeParams.id);
 			circles[0] = {
 				"id":0,
 				"x":docWidth/2,
@@ -65,7 +81,9 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				"radius":Math.min(docHeight, docWidth)/5,
 				"attr": "center",
 				"parent":-1,
-				"text":"Was Born"
+				"text":event.who + "<br><br>" + event.what,
+				"hasChild":true,
+				"eventId":$routeParams.id
 			};
 			createWhoWhatWhenWhereBubbles(0);
 			drawCircles();
@@ -131,6 +149,8 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				"text":newCircArr[0].text,
 				"hasChild":false
 			};
+			var event = getEventById(circles[0].eventId);
+			circles[0].historyText = event.who;
 			$scope.circleHistory.push(circles);
 			$scope.$apply();
 
@@ -146,10 +166,7 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			var currentY = circles[id].y;
 			switch (circles[id].attr) {
 				case "center":
-					addCircle((parentRad + childRad + 10), currentX, currentY, 45, childRad, "bottomRight", id, "Bonn, Electorate of Cologne");
-					addCircle((parentRad + childRad + 10), currentX, currentY, 135, childRad, "bottomLeft", id, "Was Born");
-					addCircle((parentRad + childRad + 10), currentX, currentY, 225, childRad, "topLeft", id, "Wed Dec 12 1770");
-					addCircle((parentRad + childRad + 10), currentX, currentY, 315, childRad, "topRight", id, "Ludwig van Beethoven");
+					createWhoWhatWhenWhereBubbles(0);
 					break;
 				case "bottomRight":
 					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", id, "test1");
@@ -196,11 +213,98 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 			drawCircles();
 		}
 
+		function shuffle(array) {
+			var currentIndex = array.length, temporaryValue, randomIndex;
+
+			while (0 !== currentIndex) {
+				randomIndex = Math.floor(Math.random() * currentIndex);
+				currentIndex -= 1;
+
+				temporaryValue = array[currentIndex];
+				array[currentIndex] = array[randomIndex];
+				array[randomIndex] = temporaryValue;
+			}
+
+			return array;
+		}
+
+		function getAssociatedItems (parent, type, maxNum) {
+			var retArr = [];
+			var parentEvent = getEventById(parent.eventId);
+			var parentMomentDate = moment(new Date(parentEvent.when));
+			for (var i = 0; i < $scope.allItems.length; i++) {
+				var curItem = $scope.allItems[i];
+				switch (type) {
+					case "who":
+						var splitName = parentEvent.who.split(" ");
+						for (var j = 0; j < splitName.length; j++) {
+							if (curItem.who.toUpperCase().indexOf(splitName[j].toUpperCase()) > -1) {
+								retArr.push(curItem);
+							}
+						}
+						break;
+					case "what":
+						if (curItem.action == parentEvent.action) {
+							retArr.push(curItem);
+						}
+						break;
+					case "where":
+						//Temporary until we have input latitude and longitude
+						var where = parentEvent.where.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ");
+						var splitWhere = where.split(" ");
+						for (var j = 0; j < splitWhere.length; j++) {
+							if (curItem.where.toUpperCase().indexOf(splitWhere[j].toUpperCase()) > -1) {
+								retArr.push(curItem);
+							}
+						}
+						break;
+					case "when":
+						if ((parentMomentDate.diff(moment(new Date(curItem.when)))) < 31557600000 ) {
+							retArr.push(curItem);
+						}
+						break;
+				}
+			}
+
+			retArr = jQuery.unique(retArr);
+
+			if (retArr.length > maxNum) {
+				retArr = shuffle(retArr).slice(0, maxNum);
+			}
+
+			return retArr;
+		}
+
 		function replaceWhoWhatWhenWhere(id) {
 			var parent = circles[circles[id].parent];
-			var typeOfCheck = circles[id].text;
+			var typeOfCheck = circles[id].attr.split("-")[1];
 			hideChildren(circles[id].parent, true);
-			debugger;
+			var associated;
+			var parentRad = parent.radius;
+			var childRad = parentRad/2;
+			var currentX = parent.x;
+			var currentY = parent.y;
+			var parId = parent.id;
+			parent.hasChild = true;
+			if (parent.attr == "center") {
+				associated = getAssociatedItems(parent, typeOfCheck, 4);
+				if (associated.length > 0) {
+					addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[0][typeOfCheck.toLowerCase()]);
+					if (associated.length > 1) {
+						addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[2][typeOfCheck.toLowerCase()]);
+						if (associated.length > 2) {
+							addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[1][typeOfCheck.toLowerCase()]);
+							if (associated.length > 3) {
+								addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[3][typeOfCheck.toLowerCase()]);
+							}
+						}
+					}
+				}
+			}
+			else {
+				associated = getAssociatedItems(parent, typeOfCheck, 3);
+			}
+			drawCircles();
 		}
 
 		function drawCircles () {
@@ -224,7 +328,7 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				else {
 					$(x[0]).on("click", function () {
 						var id = parseInt($(this)[0].id);
-						if (circles[id].attr == "aspect") {
+						if (circles[id].attr.indexOf("aspect") > -1) {
 							replaceWhoWhatWhenWhere(id);
 						}
 						else {
