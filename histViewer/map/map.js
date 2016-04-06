@@ -13,6 +13,10 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$(".se-pre-con").hide();
 
 	$scope.currentView = 'map';
+	$scope.latlng = [];
+	$scope.latlngcnt;
+	$scope.latlngnum;
+
 	var places = [];
 	var address = "";
 
@@ -29,10 +33,14 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		initialize();
 		var mapItems = DatabaseControlService.getQueryItems();
 
-		places.push(mapItems);
-		address = places[0].where;
-		geoCoder(places[0][0].where, places[0][0].who + " -- " + places[0][0].what + " -- " + places[0][0].when);
 
+		places.push(mapItems);
+		$scope.latlngnum = places[0].length;
+		$scope.latlngcnt = 0;
+
+		for(var i=0; i < places[0].length; i++) {
+			geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
+		}
 	});
 
 	function initialize () {
@@ -67,6 +75,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 				$scope.marker.setMap($scope.map);
 
+				fitView(results[0].geometry.location);
 			}
 			else {
 				alert("Geocode was not successful for the following reason: " + status);
@@ -74,6 +83,19 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		});
 	}
 
+	function fitView(loc) {
+		$scope.latlng.push(loc);
+		$scope.latlngcnt++;
+
+		if($scope.latlngcnt == $scope.latlngnum) {
+			var latlngbounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < $scope.latlngnum; i++) {
+				latlngbounds.extend($scope.latlng[i]);
+			}
+
+			$scope.map.fitBounds(latlngbounds);
+		}
+	}
 
 	var map_container = $('#map');
 	map_container.height($(document).height());
