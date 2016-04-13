@@ -25,10 +25,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		mapOfWho = 'Ludwig van Beethoven';
 	}
 
-	$scope.hideMap = function () {
-		$location.path("/main");
-	};
-
 	DatabaseControlService.queryForWho(mapOfWho).then(function () {//Load the data from the place selected
 		initialize();
 		var mapItems = DatabaseControlService.getQueryItems();
@@ -42,6 +38,11 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
 		}
 	});
+
+	$scope.hideMap = function () {
+		$location.path("/main");
+	};
+
 
 	function initialize () {
 		$scope.map = new google.maps.Map(document.getElementById('map'), {
@@ -69,8 +70,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 					title: description
 				});
 
+
 				$scope.marker.addListener('click', function () {
-					infowindow.open($scope.map, $scope.marker);
+					infowindow.open($scope.map, this);
 				});
 
 				$scope.marker.setMap($scope.map);
@@ -90,7 +92,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		if($scope.latlngcnt == $scope.latlngnum) {
 			var latlngbounds = new google.maps.LatLngBounds();
 			for (var i = 0; i < $scope.latlngnum; i++) {
+
 				latlngbounds.extend($scope.latlng[i]);
+
 			}
 
 			$scope.map.fitBounds(latlngbounds);
