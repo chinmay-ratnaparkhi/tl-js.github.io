@@ -150,7 +150,7 @@ angular.module('histViewer.main', ['ngRoute'])
 				var objPos = $(obj).position();
 				if (objPos.top == $scope.currentEventLocation.top) {
 					if (Math.abs(objPos.left - $scope.currentEventLocation.left) <= 15 ) {
-						$(obj).css("background-color", "red");
+						$(obj).css("background-color", "#ff3700");
 						//Will need to do something so that we create an event circle that has several events in it.
 						if (Math.abs(objPos.left - $scope.currentEventLocation.left) <= 5) {//Temporary fix for extremely close events
 							$(obj).css("left", objPos.left + 5);
