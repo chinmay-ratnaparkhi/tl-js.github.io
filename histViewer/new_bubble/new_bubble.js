@@ -3,7 +3,7 @@
 angular.module('histViewer.newBubble', ['ngRoute'])
 
 	.config(['$routeProvider', function ($routeProvider) {
-		$routeProvider.when('/bubble/:id', {
+		$routeProvider.when('/newbub/:id', {
 			templateUrl: 'new_bubble/new_bubble.html',
 			controller: 'NewBubbleCtrl'
 		});
@@ -302,13 +302,13 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				case "center":
 					associated = getAssociatedItems(parent, typeOfCheck, 4);
 					if (associated.length > 0) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, (typeOfCheck == 'what' ? (associated[0].who.split(" ")[0] + "<br><br>" + associated[0][typeOfCheck.toLowerCase()]) : associated[0][typeOfCheck.toLowerCase()]), associated[0].id);
 						if (associated.length > 1) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, (typeOfCheck == 'what' ? (associated[1].who.split(" ")[0] + "<br><br>" + associated[1][typeOfCheck.toLowerCase()]) : associated[1][typeOfCheck.toLowerCase()]), associated[1].id);
 							if (associated.length > 2) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, (typeOfCheck == 'what' ? (associated[2].who.split(" ")[0] + "<br><br>" + associated[2][typeOfCheck.toLowerCase()]) : associated[2][typeOfCheck.toLowerCase()]), associated[2].id);
 								if (associated.length > 3) {
-									addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[3][typeOfCheck.toLowerCase()], associated[3].id);
+									addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, (typeOfCheck == 'what' ? (associated[3].who.split(" ")[0] + "<br><br>" + associated[3][typeOfCheck.toLowerCase()]) : associated[3][typeOfCheck.toLowerCase()]), associated[3].id);
 								}
 							}
 						}
@@ -317,11 +317,11 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				case "bottomRight":
 					associated = getAssociatedItems(parent, typeOfCheck, 3);
 					if (associated.length > 0) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, (typeOfCheck == 'what' ? (associated[0].who.split(" ")[0] + "<br><br>" + associated[0][typeOfCheck.toLowerCase()]) : associated[0][typeOfCheck.toLowerCase()]), associated[0].id);
 						if (associated.length > 1) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, (typeOfCheck == 'what' ? (associated[1].who.split(" ")[0] + "<br><br>" + associated[1][typeOfCheck.toLowerCase()]) : associated[1][typeOfCheck.toLowerCase()]), associated[1].id);
 							if (associated.length > 2) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, (typeOfCheck == 'what' ? (associated[2].who.split(" ")[0] + "<br><br>" + associated[2][typeOfCheck.toLowerCase()]) : associated[2][typeOfCheck.toLowerCase()]), associated[2].id);
 							}
 						}
 					}
@@ -329,11 +329,11 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				case "bottomLeft":
 					associated = getAssociatedItems(parent, typeOfCheck, 3);
 					if (associated.length > 0) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, (typeOfCheck == 'what' ? (associated[0].who.split(" ")[0] + "<br><br>" + associated[0][typeOfCheck.toLowerCase()]) : associated[0][typeOfCheck.toLowerCase()]), associated[0].id);
 						if (associated.length > 1) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, (typeOfCheck == 'what' ? (associated[1].who.split(" ")[0] + "<br><br>" + associated[1][typeOfCheck.toLowerCase()]) : associated[1][typeOfCheck.toLowerCase()]), associated[1].id);
 							if (associated.length > 2) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, (typeOfCheck == 'what' ? (associated[2].who.split(" ")[0] + "<br><br>" + associated[2][typeOfCheck.toLowerCase()]) : associated[2][typeOfCheck.toLowerCase()]), associated[2].id);
 							}
 						}
 					}
@@ -341,11 +341,11 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				case "topLeft":
 					associated = getAssociatedItems(parent, typeOfCheck, 3);
 					if (associated.length > 0) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, (typeOfCheck == 'what' ? (associated[0].who.split(" ")[0] + "<br><br>" + associated[0][typeOfCheck.toLowerCase()]) : associated[0][typeOfCheck.toLowerCase()]), associated[0].id);
 						if (associated.length > 1) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							addCircle((parentRad + childRad + 5), currentX, currentY, 135, childRad, "bottomLeft", parId, (typeOfCheck == 'what' ? (associated[1].who.split(" ")[0] + "<br><br>" + associated[1][typeOfCheck.toLowerCase()]) : associated[1][typeOfCheck.toLowerCase()]), associated[1].id);
 							if (associated.length > 2) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								addCircle((parentRad + childRad + 5), currentX, currentY, 225, childRad, "topLeft", parId, (typeOfCheck == 'what' ? (associated[2].who.split(" ")[0] + "<br><br>" + associated[2][typeOfCheck.toLowerCase()]) : associated[2][typeOfCheck.toLowerCase()]), associated[2].id);
 							}
 						}
 					}
@@ -353,11 +353,11 @@ angular.module('histViewer.newBubble', ['ngRoute'])
 				case "topRight":
 					associated = getAssociatedItems(parent, typeOfCheck, 3);
 					if (associated.length > 0) {
-						addCircle((parentRad + childRad + 5), currentX, currentY, 215, childRad, "topLeft", parId, associated[0][typeOfCheck.toLowerCase()], associated[0].id);
+						addCircle((parentRad + childRad + 5), currentX, currentY, 215, childRad, "topLeft", parId, (typeOfCheck == 'what' ? (associated[0].who.split(" ")[0] + "<br><br>" + associated[0][typeOfCheck.toLowerCase()]) : associated[0][typeOfCheck.toLowerCase()]), associated[0].id);
 						if (associated.length > 1) {
-							addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, associated[1][typeOfCheck.toLowerCase()], associated[1].id);
+							addCircle((parentRad + childRad + 5), currentX, currentY, 315, childRad, "topRight", parId, (typeOfCheck == 'what' ? (associated[1].who.split(" ")[0] + "<br><br>" + associated[1][typeOfCheck.toLowerCase()]) : associated[1][typeOfCheck.toLowerCase()]), associated[1].id);
 							if (associated.length > 2) {
-								addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, associated[2][typeOfCheck.toLowerCase()], associated[2].id);
+								addCircle((parentRad + childRad + 5), currentX, currentY, 45, childRad, "bottomRight", parId, (typeOfCheck == 'what' ? (associated[2].who.split(" ")[0] + "<br><br>" + associated[2][typeOfCheck.toLowerCase()]) : associated[2][typeOfCheck.toLowerCase()]), associated[2].id);
 							}
 						}
 					}
