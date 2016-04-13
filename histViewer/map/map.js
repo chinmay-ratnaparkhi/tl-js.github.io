@@ -157,6 +157,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		});
 	}
 
+	
 	function fitView(loc) {
 		$scope.latlng.push(loc);
 		$scope.latlngcnt++;
