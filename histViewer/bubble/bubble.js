@@ -3,7 +3,7 @@
 angular.module('histViewer.bubble', ['ngRoute'])
 
 	.config(['$routeProvider', function ($routeProvider) {
-		$routeProvider.when('/oldbub/:id', {
+		$routeProvider.when('/bubble/:id', {
 				templateUrl: 'bubble/bubble.html',
 				controller: 'BubbleCtrl'
 			});
