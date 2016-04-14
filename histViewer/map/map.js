@@ -16,10 +16,13 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$scope.latlng = [];
 	$scope.latlngcnt;
 	$scope.latlngnum;
+	$scope.markers = [];
+	$scope.consolidatedMarkers = [];
+
+	$scope.locations = [];
 
 	var places = [];
 	var address = "";
-	$scope.locations = [];
 
 	var mapOfWho = $routeParams.who;
 	if (mapOfWho == "") {
@@ -38,9 +41,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		x = 0;
 		loopGeocodeArray(places[0]);
 
-		//for(var i=0; i < places[0].length; i++) {
-		//	geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
-		//}
+		/*for(var i=0; i < places[0].length; i++) {
+		 geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
+		 }*/
 	});
 
 	$scope.hideMap = function () {
@@ -116,6 +119,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		});
 	}
 
+
+
 	function initialize () {
 		$scope.map = new google.maps.Map(document.getElementById('map'), {
 			center: {lat: -34.397, lng: 150.644},
@@ -142,6 +147,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 					title: description
 				});
 
+				$scope.markers.push($scope.marker);
+
 
 				$scope.marker.addListener('click', function () {
 					infowindow.open($scope.map, this);
@@ -155,16 +162,25 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				alert("Geocode was not successful for the following reason: " + status);
 			}
 		});
+
 	}
 
 	
 	function fitView(loc) {
 		$scope.latlng.push(loc);
+		$scope.consolidatedMarkers.push(false);
 		$scope.latlngcnt++;
 
 		if($scope.latlngcnt == $scope.latlngnum) {
 			var latlngbounds = new google.maps.LatLngBounds();
 			for (var i = 0; i < $scope.latlngnum; i++) {
+
+				for(var j = 0; j < i; j++){
+					if($scope.latlng[j] == $scope.latlng[i]){
+						consolidateMarkers(i, j);
+						break;
+					}
+				}
 
 				latlngbounds.extend($scope.latlng[i]);
 
@@ -172,6 +188,28 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 			$scope.map.fitBounds(latlngbounds);
 		}
+	}
+
+	function consolidateMarkers(i, j){
+
+		if(consolidatedMarkers[i] == false){
+
+			//create new marker and overwrite
+
+			var newDescription = "";
+			newDescription = places[0][i].who + " " + places[0][i].what;
+
+			markers[i].
+
+				consolidatedMarkers[i] = true;
+
+		}else{
+
+			//add link to partially consolidated marker.
+
+		}
+
+		//Google.map.trigger(markers[x], 'click');
 	}
 
 	var map_container = $('#map');
