@@ -18,6 +18,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$scope.latlngnum;
 	$scope.markers = [];
 	$scope.consolidatedMarkers = [];
+	$scope.descriptions = [];
 
 	$scope.locations = [];
 
@@ -37,6 +38,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		places.push(mapItems);
 		$scope.latlngnum = places[0].length;
 		$scope.latlngcnt = 0;
+
+		$(".se-pre-con").show();
 
 		x = 0;
 		loopGeocodeArray(places[0]);
@@ -70,6 +73,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		for (var i = 0; i < $scope.locations.length; i++) {
 			placeMarker($scope.locations[i]);
 		}
+
+		$(".se-pre-con").fadeOut();
+
 	}
 
 	function placeMarker(locationObj) {
@@ -94,6 +100,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		$scope.marker.setMap($scope.map);
 
+		$scope.markers.push($scope.marker);
+
 		fitView(locationObj.location);
 	}
 
@@ -111,10 +119,18 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 					'address':address,
 					'location': results[0].geometry.location
 				});
-				callback();
+
+				setTimeout(function(){
+					callback();
+				}, 200);
+
+
 			}
 			else {
-				callback();
+				console.log(status);
+				setTimeout(function(){
+					callback();
+				}, 50);
 			}
 		});
 	}
@@ -149,7 +165,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 				$scope.markers.push($scope.marker);
 
-
 				$scope.marker.addListener('click', function () {
 					infowindow.open($scope.map, this);
 				});
@@ -165,7 +180,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	}
 
-	
 	function fitView(loc) {
 		$scope.latlng.push(loc);
 		$scope.consolidatedMarkers.push(false);
@@ -176,7 +190,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			for (var i = 0; i < $scope.latlngnum; i++) {
 
 				for(var j = 0; j < i; j++){
-					if($scope.latlng[j] == $scope.latlng[i]){
+					if($scope.latlng[i].equals($scope.latlng[j])){
 						consolidateMarkers(i, j);
 						break;
 					}
@@ -192,20 +206,65 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	function consolidateMarkers(i, j){
 
-		if(consolidatedMarkers[i] == false){
+
+		if($scope.consolidatedMarkers[j] == false){
 
 			//create new marker and overwrite
 
-			var newDescription = "";
-			newDescription = places[0][i].who + " " + places[0][i].what;
+			$scope.descriptions[j] = "";
+			$scope.descriptions[j] = "<a href='#'>" +places[0][j].who + " " + places[0][j].what + "</a></br>";
+			$scope.descriptions[j] += "<a href='#'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
 
-			markers[i].
+			$scope.marker = new google.maps.Marker({
 
-				consolidatedMarkers[i] = true;
+				position: $scope.latlng[j],
+				title: "Multiple Events"
+			});
+
+			var infowindow = new google.maps.InfoWindow({
+				content: $scope.descriptions[j]
+			});
+
+			$scope.marker.addListener('click', function () {
+				infowindow.open($scope.map, this);
+			});
+
+			$scope.markers[i].setMap(null);
+			$scope.markers[j].setMap(null);
+
+			$scope.marker.setMap($scope.map);
+
+			$scope.markers[j] = $scope.marker;
+
+
+			$scope.consolidatedMarkers[j] = true;
 
 		}else{
 
 			//add link to partially consolidated marker.
+			$scope.descriptions[j] += "<a href='#'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
+
+			$scope.marker = new google.maps.Marker({
+
+				position: $scope.latlng[j],
+				title: "Multiple Events"
+			});
+
+			var infowindow = new google.maps.InfoWindow({
+				content: $scope.descriptions[j]
+			});
+
+			$scope.marker.addListener('click', function () {
+				infowindow.open($scope.map, this);
+			});
+
+			$scope.markers[i].setMap(null);
+			$scope.markers[j].setMap(null);
+
+			$scope.marker.setMap($scope.map);
+
+			$scope.markers[j] = $scope.marker;
+
 
 		}
 
