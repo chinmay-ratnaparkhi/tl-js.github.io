@@ -38,6 +38,10 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		var heightDynamicalyUpdated = false;
 
+		$scope.redirectToDatabase = function () {
+			$location.path('/db/main');
+		};
+
 		function triggerClickScroll() {
 			debiki.Utterscroll.enable({
 				scrollstoppers: '.CodeMirror, .ui-resizable-handle' });
