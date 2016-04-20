@@ -172,6 +172,38 @@ body, html {
 	cursor:pointer;
 }
 
+.setDateRange {
+	height: 50px;
+	width: 50px;
+	position:absolute;
+	top: calc(100% - 75px);
+	left: 90%;
+	border-radius: 10%;
+	curser: pointer;
+}
+
+.startDate {
+	position: absolute;
+	top: calc(100% - 72px);
+	left: 83%;
+	display: inline-block;
+}
+
+.sdInput {
+	text-align: center;
+}
+
+.endDate {
+	position: absolute;
+	top: calc(100% - 47px);
+	left: 83%;
+}
+
+.edInput {
+	text-align: center;
+}
+
+
 .closeMap:hover {
 	background: rgba(200, 200, 200, 0.5);
 }
