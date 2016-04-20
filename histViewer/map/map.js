@@ -20,9 +20,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$scope.consolidatedMarkers = [];
 	$scope.descriptions = [];
 	$scope.originalDescriptions = [];
-	$scope.listeners = [];
 	$scope.locations = [];
-	$scope.infoBoxes = [];
 	$scope.infoWindowMulti;
 
 	var places = [];
@@ -47,9 +45,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		x = 0;
 		loopGeocodeArray(places[0]);
 
-		/*for(var i=0; i < places[0].length; i++) {
-		 geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
-		 }*/
 	});
 
 
@@ -87,7 +82,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		var displayString = locationObj.address.who + " -- " + locationObj.address.what + " -- " + locationObj.address.when;
 
 		$scope.originalDescriptions.push(displayString);
-		//$scope.descriptions.push([]);
 
 		$scope.map.setCenter(locationObj.location);
 
@@ -101,12 +95,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			title: displayString
 		});
 
-
-
-
-		$scope.listeners.push($scope.marker.addListener('click', function () {
+		$scope.marker.addListener('click', function () {
 			infowindow.open($scope.map, this);
-		}));
+		});
 
 		$scope.marker.setMap($scope.map);
 
@@ -176,9 +167,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 				$scope.markers.push($scope.marker);
 
-				$scope.listeners.push($scope.marker.addListener('click', function () {
+				$scope.marker.addListener('click', function () {
 					infowindow.open($scope.map, this);
-				}));
+				});
 
 				$scope.marker.setMap($scope.map);
 
@@ -217,15 +208,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 
 	$scope.linkClickedUpdate = function(index){
-		//$scope.listeners[index].remove();
-
-		/*$scope.infoWindowMulti = new google.maps.InfoWindow({
-			content: $scope.originalDescriptions[index]
-		});*/
 
 		$scope.infoWindowMulti.setContent($scope.originalDescriptions[index]);
-
-		//infowindow.open($scope.map, this);
 
 		$scope.markers[index].addListener('click', function () {
 			$scope.infoWindowMulti.open($scope.map, this);
@@ -248,46 +232,17 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				enableEventPropagation: false
 			});
 
-			/*$scope.descriptions[j][0] = document.createElement("div");
-			$scope.descriptions[j][0].id = j;
-			$scope.descriptions[j][0].className = places[0][j].who + j;
-			$scope.descriptions[j][0].innerHTML = places[0][j].who + " " + places[0][j].what + "</br>";
-			document.body.appendChild(document.createTextNode($scope.descriptions[j][0]));
-
-			$scope.descriptions[j][1] = document.createElement("div");
-			$scope.descriptions[j][1].id = i;
-			$scope.descriptions[j][1].className = places[0][j].who + i;
-			$scope.descriptions[j][1].innerHTML = places[0][i].who + " " + places[0][i].what + "</br>";
-			document.body.appendChild($scope.descriptions[j][0]);*/
-
-			/*var boxOptions = {
-				content: $scope.descriptions[j]
-			};
-
-			$scope.infoBoxes[j] = $scope.descriptions[j];*/
-
 			$scope.marker = new google.maps.Marker({
 
 				position: $scope.latlng[j],
 				title: "Multiple Events"
 			});
 
-			/*var infowindow = new google.maps.InfoWindow({
-				content: $scope.descriptions[j]
-			});
-
-			$scope.listeners[j] = $scope.marker.addListener('click', function () {
-				infowindow.open($scope.map, this);
-			});*/
 
 			google.maps.event.addListener($scope.marker,'click',(function(marker, j) {
 				return function() {
 					$scope.infoWindowMulti.setContent($scope.descriptions[j]);
 					$scope.infoWindowMulti.open($scope.map, marker);
-					/*google.maps.event.addListener($scope.infoWindowMulti, 'click', (function(i){
-						$scope.infoWindowMulti.setContent($scope.originalDescriptions[j]);
-						$scope.infoWindowMulti.open($scope.map, this);
-					}));*/
 				}
 			})($scope.marker, j));
 
@@ -303,20 +258,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		}else{
 
-			//add link to partially consolidated marker.
-			/*var newDescription = document.createElement("div");
-			newDescription.id = i;
-			newDescription.className = places[0][j].who + i;
-			newDescription.innerHTML = places[0][i].who + " " + places[0][i].what + "</br>";
-
-			$scope.descriptions[j].push(newDescription);
-			document.body.appendChild($scope.descriptions[j][$scope.descriptions[j].length - 1]);
-
-			var boxOptions = {
-				content: $scope.descriptions[j]
-			};
-
-			$scope.infoBoxes[j] = boxOptions;*/
 
 			$scope.descriptions[j] += "<a onclick='markerLinkClicked(" + i + ");'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
 
@@ -330,15 +271,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				position: $scope.latlng[j],
 				title: "Multiple Events"
 			});
-
-			/*var infowindow = new google.maps.InfoWindow({
-				content: $scope.descriptions[j]
-			});
-
-			$scope.listeners[j] = $scope.marker.addListener('click', function () {
-
-				infowindow.open($scope.map, this);
-			});*/
 
 			google.maps.event.addListener($scope.marker,'click',(function(marker, j) {
 				return function() {
