@@ -202,7 +202,11 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 			}
 
-			$scope.map.fitBounds(latlngbounds);
+			if($scope.latlngnum == 1){
+				$scope.map.setCenter($scope.latlng[0]);
+			}else{
+				$scope.map.fitBounds(latlngbounds);
+			}
 		}
 	}
 
