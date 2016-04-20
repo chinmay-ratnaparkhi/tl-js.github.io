@@ -65,7 +65,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			numberShownEvents = 0;
 			$(".se-pre-con").show(); //Show the loading spinner
 			$scope.person = person;
-			DatabaseControlService.queryForWho(person).then(function () {//Load the data from the person selected
+			DatabaseControlService.queryForWho(person.toUpperCase()).then(function () {//Load the data from the person selected
 				var timelineEvents = DatabaseControlService.getQueryItems();
 				for (var i = 0; i < timelineEvents.length; i++) {
 					timelineEvents[i].who = correctCapitalization(timelineEvents[i].who);
@@ -572,6 +572,9 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.allItems = DatabaseControlService.getItems();
+			for (var i = 0; i < $scope.allItems.length; i++) {
+				$scope.allItems[i].who = correctCapitalization($scope.allItems[i].who);
+			}
 			generatePeople();
 			checkHistory();
 			triggerClickScroll();
