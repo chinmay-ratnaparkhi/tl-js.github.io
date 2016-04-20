@@ -31,7 +31,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		mapOfWho = 'Ludwig van Beethoven';
 	}
 
-	DatabaseControlService.queryForWho(mapOfWho).then(function () {//Load the data from the place selected
+	DatabaseControlService.queryForWho(mapOfWho.toUpperCase()).then(function () {//Load the data from the place selected
 		initialize();
 		var mapItems = DatabaseControlService.getQueryItems();
 
