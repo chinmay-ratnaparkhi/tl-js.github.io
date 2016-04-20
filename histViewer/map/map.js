@@ -19,8 +19,11 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$scope.markers = [];
 	$scope.consolidatedMarkers = [];
 	$scope.descriptions = [];
-
+	$scope.originalDescriptions = [];
+	$scope.listeners = [];
 	$scope.locations = [];
+	$scope.infoBoxes = [];
+	$scope.infoWindowMulti;
 
 	var places = [];
 	var address = "";
@@ -48,6 +51,8 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		 geoCoder(places[0][i].where, places[0][i].who + " -- " + places[0][i].what + " -- " + places[0][i].when);
 		 }*/
 	});
+
+
 
 	$scope.hideMap = function () {
 		$location.path("/main");
@@ -81,6 +86,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	function placeMarker(locationObj) {
 		var displayString = locationObj.address.who + " -- " + locationObj.address.what + " -- " + locationObj.address.when;
 
+		$scope.originalDescriptions.push(displayString);
+		//$scope.descriptions.push([]);
+
 		$scope.map.setCenter(locationObj.location);
 
 		var infowindow = new google.maps.InfoWindow({
@@ -94,9 +102,11 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		});
 
 
-		$scope.marker.addListener('click', function () {
+
+
+		$scope.listeners.push($scope.marker.addListener('click', function () {
 			infowindow.open($scope.map, this);
-		});
+		}));
 
 		$scope.marker.setMap($scope.map);
 
@@ -104,6 +114,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		fitView(locationObj.location);
 	}
+
 
 	//Used along with the above function.
 	function doGeocode(address, index, callback) {
@@ -165,9 +176,9 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 				$scope.markers.push($scope.marker);
 
-				$scope.marker.addListener('click', function () {
+				$scope.listeners.push($scope.marker.addListener('click', function () {
 					infowindow.open($scope.map, this);
-				});
+				}));
 
 				$scope.marker.setMap($scope.map);
 
@@ -204,6 +215,23 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		}
 	}
 
+
+	$scope.linkClickedUpdate = function(index){
+		//$scope.listeners[index].remove();
+
+		/*$scope.infoWindowMulti = new google.maps.InfoWindow({
+			content: $scope.originalDescriptions[index]
+		});*/
+
+		$scope.infoWindowMulti.setContent($scope.originalDescriptions[index]);
+
+		//infowindow.open($scope.map, this);
+
+		$scope.markers[index].addListener('click', function () {
+			$scope.infoWindowMulti.open($scope.map, this);
+		});
+	}
+
 	function consolidateMarkers(i, j){
 
 
@@ -212,8 +240,31 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			//create new marker and overwrite
 
 			$scope.descriptions[j] = "";
-			$scope.descriptions[j] = "<a href='#'>" +places[0][j].who + " " + places[0][j].what + "</a></br>";
-			$scope.descriptions[j] += "<a href='#'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
+			$scope.descriptions[j] = "<a onclick='markerLinkClicked(" + j + ");'>" +places[0][j].who + " " + places[0][j].what + "</a></br>";
+			$scope.descriptions[j] +=  "<a onclick='markerLinkClicked(" + i + ");'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
+
+			$scope.infoWindowMulti = new google.maps.InfoWindow({
+				pane: "mapPane",
+				enableEventPropagation: false
+			});
+
+			/*$scope.descriptions[j][0] = document.createElement("div");
+			$scope.descriptions[j][0].id = j;
+			$scope.descriptions[j][0].className = places[0][j].who + j;
+			$scope.descriptions[j][0].innerHTML = places[0][j].who + " " + places[0][j].what + "</br>";
+			document.body.appendChild(document.createTextNode($scope.descriptions[j][0]));
+
+			$scope.descriptions[j][1] = document.createElement("div");
+			$scope.descriptions[j][1].id = i;
+			$scope.descriptions[j][1].className = places[0][j].who + i;
+			$scope.descriptions[j][1].innerHTML = places[0][i].who + " " + places[0][i].what + "</br>";
+			document.body.appendChild($scope.descriptions[j][0]);*/
+
+			/*var boxOptions = {
+				content: $scope.descriptions[j]
+			};
+
+			$scope.infoBoxes[j] = $scope.descriptions[j];*/
 
 			$scope.marker = new google.maps.Marker({
 
@@ -221,13 +272,24 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				title: "Multiple Events"
 			});
 
-			var infowindow = new google.maps.InfoWindow({
+			/*var infowindow = new google.maps.InfoWindow({
 				content: $scope.descriptions[j]
 			});
 
-			$scope.marker.addListener('click', function () {
+			$scope.listeners[j] = $scope.marker.addListener('click', function () {
 				infowindow.open($scope.map, this);
-			});
+			});*/
+
+			google.maps.event.addListener($scope.marker,'click',(function(marker, j) {
+				return function() {
+					$scope.infoWindowMulti.setContent($scope.descriptions[j]);
+					$scope.infoWindowMulti.open($scope.map, marker);
+					/*google.maps.event.addListener($scope.infoWindowMulti, 'click', (function(i){
+						$scope.infoWindowMulti.setContent($scope.originalDescriptions[j]);
+						$scope.infoWindowMulti.open($scope.map, this);
+					}));*/
+				}
+			})($scope.marker, j));
 
 			$scope.markers[i].setMap(null);
 			$scope.markers[j].setMap(null);
@@ -242,7 +304,26 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		}else{
 
 			//add link to partially consolidated marker.
-			$scope.descriptions[j] += "<a href='#'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
+			/*var newDescription = document.createElement("div");
+			newDescription.id = i;
+			newDescription.className = places[0][j].who + i;
+			newDescription.innerHTML = places[0][i].who + " " + places[0][i].what + "</br>";
+
+			$scope.descriptions[j].push(newDescription);
+			document.body.appendChild($scope.descriptions[j][$scope.descriptions[j].length - 1]);
+
+			var boxOptions = {
+				content: $scope.descriptions[j]
+			};
+
+			$scope.infoBoxes[j] = boxOptions;*/
+
+			$scope.descriptions[j] += "<a onclick='markerLinkClicked(" + i + ");'>" +places[0][i].who + " " + places[0][i].what + "</a></br>";
+
+			$scope.infoWindowMulti = new google.maps.InfoWindow({
+				pane: "mapPane",
+				enableEventPropagation: false
+			});
 
 			$scope.marker = new google.maps.Marker({
 
@@ -250,13 +331,23 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				title: "Multiple Events"
 			});
 
-			var infowindow = new google.maps.InfoWindow({
+			/*var infowindow = new google.maps.InfoWindow({
 				content: $scope.descriptions[j]
 			});
 
-			$scope.marker.addListener('click', function () {
+			$scope.listeners[j] = $scope.marker.addListener('click', function () {
+
 				infowindow.open($scope.map, this);
-			});
+			});*/
+
+			google.maps.event.addListener($scope.marker,'click',(function(marker, j) {
+				return function() {
+
+					$scope.infoWindowMulti.setContent($scope.descriptions[j]);
+					$scope.infoWindowMulti.open($scope.map, marker);
+				}
+			})($scope.marker, j));
+
 
 			$scope.markers[i].setMap(null);
 			$scope.markers[j].setMap(null);
@@ -267,12 +358,25 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 
 		}
-
-		//Google.map.trigger(markers[x], 'click');
 	}
+
 
 	var map_container = $('#map');
 	map_container.height($(document).height());
 
 }]);
+
+
+
+function markerLinkClicked(index){
+
+	var scope = angular.element(document.getElementById("map")).scope();
+
+	scope.$apply(function(){
+		scope.linkClickedUpdate(index);
+	});
+
+	return false;
+
+}
 
