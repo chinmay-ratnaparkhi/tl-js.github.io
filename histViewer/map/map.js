@@ -53,6 +53,18 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		$location.path("/main");
 	};
 
+	$scope.startDate = function () {
+
+	};
+
+	$scope.endDate = function () {
+
+	};
+
+	$scope.setDateRange = function () {
+
+	}
+
 	//Asynchronous geocoding call for checking valid input
 	var x;
 	var loopGeocodeArray = function (arr) {
