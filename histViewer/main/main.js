@@ -5,7 +5,8 @@ angular.module('histViewer.main', ['ngRoute'])
 	.config(['$routeProvider', function ($routeProvider) {
 		$routeProvider.when('/main', {
 			templateUrl: 'main/main.html',
-			controller: 'MainCtrl'
+			controller: 'MainCtrl',
+			controllerAs: 'vm'
 		});
 	}])
 
@@ -36,6 +37,10 @@ angular.module('histViewer.main', ['ngRoute'])
 		var numberShownEvents = 0;
 
 		var heightDynamicalyUpdated = false;
+
+		$scope.redirectToDatabase = function () {
+			$location.path('/db/main');
+		};
 
 		function triggerClickScroll() {
 			debiki.Utterscroll.enable({
@@ -99,7 +104,7 @@ angular.module('histViewer.main', ['ngRoute'])
 		//This function is used to add people back into the listing on the left.
 		function addPersons(name) {
 			$scope.people.push(name);
-			$scope.$apply();
+			//$scope.$apply();
 		}
 
 		//This function is used to remove the person's name from the listing on the left so that they cannot be selected twice.
@@ -309,6 +314,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			div.on("click", function(e){
 				var curName = $(this).find('.timelineName').text();
 				removeFromTotalEvents(curName);
+				$scope.$apply();
 			});
 
 			var mapDiv = $('<div />', {
