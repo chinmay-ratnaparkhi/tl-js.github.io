@@ -179,7 +179,7 @@ body, html {
 	top: calc(100% - 75px);
 	left: 90%;
 	border-radius: 10%;
-	curser: pointer;
+	cursor: pointer;
 }
 
 .startDate {
