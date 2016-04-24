@@ -451,6 +451,38 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				enableEventPropagation: false
 			});
 
+			google.maps.event.addListener($scope.infoWindowMulti, 'domready', function() {
+				var iwOuter = $('.gm-style-iw');
+				var iwBackground = iwOuter.prev();
+
+				iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+				iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+				var iwCloseBtn = iwOuter.next();
+
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(1)').css({
+					'z-index': 2
+				});
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(2)').css({
+					'z-index': 2
+				});
+
+				iwCloseBtn.css({
+					width: '15px',
+					height: '15px',
+					opacity: '1',
+					right: '28px',
+					top: '10px',
+					border: '1px solid #48b5e9',
+					'border-radius': '13px',
+					'box-shadow': '0 0 5px #3990B9'
+				});
+
+				iwCloseBtn.mouseout(function(){
+					$(this).css({opacity: '1'});
+				});
+			});
+
 			$scope.marker = new google.maps.Marker({
 
 				position: $scope.latlng[j],
@@ -483,6 +515,38 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			$scope.infoWindowMulti = new google.maps.InfoWindow({
 				pane: "mapPane",
 				enableEventPropagation: false
+			});
+
+			google.maps.event.addListener($scope.infoWindowMulti, 'domready', function() {
+				var iwOuter = $('.gm-style-iw');
+				var iwBackground = iwOuter.prev();
+
+				iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+				iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+				var iwCloseBtn = iwOuter.next();
+
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(1)').css({
+					'z-index': 2
+				});
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(2)').css({
+					'z-index': 2
+				});
+
+				iwCloseBtn.css({
+					width: '15px',
+					height: '15px',
+					opacity: '1',
+					right: '28px',
+					top: '10px',
+					border: '1px solid #48b5e9',
+					'border-radius': '13px',
+					'box-shadow': '0 0 5px #3990B9'
+				});
+
+				iwCloseBtn.mouseout(function(){
+					$(this).css({opacity: '1'});
+				});
 			});
 
 			$scope.marker = new google.maps.Marker({
@@ -525,6 +589,38 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 				enableEventPropagation: false
 			});
 
+			google.maps.event.addListener($scope.infoWindowMulti, 'domready', function() {
+				var iwOuter = $('.gm-style-iw');
+				var iwBackground = iwOuter.prev();
+
+				iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+				iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+				var iwCloseBtn = iwOuter.next();
+
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(1)').css({
+					'z-index': 2
+				});
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(2)').css({
+					'z-index': 2
+				});
+
+				iwCloseBtn.css({
+					width: '15px',
+					height: '15px',
+					opacity: '1',
+					right: '28px',
+					top: '10px',
+					border: '1px solid #48b5e9',
+					'border-radius': '13px',
+					'box-shadow': '0 0 5px #3990B9'
+				});
+
+				iwCloseBtn.mouseout(function(){
+					$(this).css({opacity: '1'});
+				});
+			});
+
 			$scope.marker = new google.maps.Marker({
 
 				position: $scope.latlng[j],
@@ -557,6 +653,38 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 			$scope.infoWindowMulti = new google.maps.InfoWindow({
 				pane: "mapPane",
 				enableEventPropagation: false
+			});
+
+			google.maps.event.addListener($scope.infoWindowMulti, 'domready', function() {
+				var iwOuter = $('.gm-style-iw');
+				var iwBackground = iwOuter.prev();
+
+				iwBackground.children(':nth-child(2)').css({'display' : 'none'});
+				iwBackground.children(':nth-child(4)').css({'display' : 'none'});
+
+				var iwCloseBtn = iwOuter.next();
+
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(1)').css({
+					'z-index': 2
+				});
+				iwOuter.prev().children(':nth-child(3)').children(':nth-child(2)').css({
+					'z-index': 2
+				});
+
+				iwCloseBtn.css({
+					width: '15px',
+					height: '15px',
+					opacity: '1',
+					right: '28px',
+					top: '10px',
+					border: '1px solid #48b5e9',
+					'border-radius': '13px',
+					'box-shadow': '0 0 5px #3990B9'
+				});
+
+				iwCloseBtn.mouseout(function(){
+					$(this).css({opacity: '1'});
+				});
 			});
 
 			$scope.marker = new google.maps.Marker({
