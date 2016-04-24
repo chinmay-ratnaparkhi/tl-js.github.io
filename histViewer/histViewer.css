@@ -187,23 +187,39 @@ body, html {
 	top: calc(100% - 72px);
 	left: 83%;
 	display: inline-block;
+	background: white;
 }
 
 .sdInput {
 	text-align: center;
+	width: 4em;
 }
 
 .endDate {
 	position: absolute;
 	top: calc(100% - 47px);
 	left: 83%;
+	background: white;
 }
 
 .edInput {
 	text-align: center;
+	width: 4em;
 }
 
 
 .closeMap:hover {
 	background: rgba(200, 200, 200, 0.5);
+}
+
+.mapTitle {
+	position: absolute;
+	text-shadow: 2px 2px 2px #000;
+	text-align: center;
+	color: red;
+	font-size: 20px;
+	height: 1em;
+	width: 400px;
+	top: 5%;
+	left: calc(50% - 200px);
 }

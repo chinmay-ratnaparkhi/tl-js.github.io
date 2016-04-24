@@ -32,6 +32,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	if (mapOfWho == "") {
 		mapOfWho = 'Ludwig van Beethoven';
 	}
+	$scope.title = $routeParams.who;
 
 	DatabaseControlService.queryForWho(mapOfWho.toUpperCase()).then(function () {//Load the data from the place selected
 		initialize();
@@ -64,13 +65,14 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	};
 
 	$scope.setDateRange = function () {
-
-		$scope.startDate = new Date(1805, 0, 1);
-		$scope.endDate = new Date(1825, 11, 31);
+		var start = $("#startDateInput");
+		var end = $("#endDateInput");
+		$scope.startDate = new Date("" + (parseInt(start.val()) + 1) + "");
+		$scope.endDate = new Date("" + (parseInt(end.val()) + 1) + "");
 
 		reinitialize($scope.startDate, $scope.endDate);
 
-	}
+	};
 
 	//Asynchronous geocoding call for checking valid input
 	var x;
@@ -98,7 +100,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	}
 
 	function replaceMarkers(startDate, endDate){
-
 		//resets latlngnum to the amount of markers that will be placed.
 		for (var i = 0; i < $scope.locations.length; i++) {
 			if($scope.dates[i].getFullYear() >= startDate.getFullYear() && $scope.dates[i].getFullYear() <= endDate.getFullYear()){
