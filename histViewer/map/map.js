@@ -77,10 +77,6 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	};
 
 	$scope.setDateRange = function () {
-		/*var start = $("#startDateInput");
-		var end = $("#endDateInput");
-		$scope.startDate = new Date("" + (parseInt(start.val()) + 1) + "");
-		$scope.endDate = new Date("" + (parseInt(end.val()) + 1) + "");*/
 
 		$scope.setStartDate();
 		$scope.setEndDate();
@@ -141,8 +137,13 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	function placeMarker(locationObj) {
 		var displayString = '<ul style="list-style: none; padding-left: 10px;">'+
 			'<li>' + locationObj.address.what + '</li>' +
-			'<li>' + locationObj.address.when + '</li>' +
-		'</ul>';
+			'<li>' + locationObj.address.when + '</li>';
+
+		if(locationObj.address.ref != ""){
+			displayString += '<li>' + '<a href=' + locationObj.address.ref + ' target=_blank>' + 'Reference' + '</a>' + '</li>' + '</ul>';
+		}else{
+			displayString += '</ul>';
+		}
 
 		$scope.originalDescriptions.push(displayString);
 		$scope.dates.push(new Date(locationObj.address.when));
@@ -207,8 +208,13 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		var displayString = '<ul style="list-style: none; padding-left: 10px;">'+
 			'<li>' + locationObj.address.what + '</li>' +
-			'<li>' + locationObj.address.when + '</li>' +
-			'</ul>';
+			'<li>' + locationObj.address.when + '</li>';
+
+		if(locationObj.address.ref != ""){
+			displayString += '<li>' + '<a href=' + locationObj.address.ref + ' target=_blank>' + 'Reference' + '</a>' + '</li>' + '</ul>';
+		}else{
+			displayString += '</ul>';
+		}
 
 		$scope.map.setCenter(locationObj.location);
 
