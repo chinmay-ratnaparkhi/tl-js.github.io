@@ -214,9 +214,9 @@ body, html {
 
 .mapTitle {
 	position: absolute;
-	text-shadow: 2px 2px 2px #000;
+	text-shadow: 2px 2px 2px #000, -2px -2px 2px #000;
 	text-align: center;
-	color: red;
+	color: rgb(230,230,230);
 	font-size: 20px;
 	height: 1em;
 	width: 400px;
