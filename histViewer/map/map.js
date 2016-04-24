@@ -190,7 +190,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		$scope.marker = new google.maps.Marker({
 			position: locationObj.location,
-			title: displayString
+			title: locationObj.address.what
 		});
 
 		$scope.marker.addListener('click', function () {
@@ -258,7 +258,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 		$scope.marker = new google.maps.Marker({
 			position: locationObj.location,
-			title: displayString
+			title: locationObj.address.what
 		});
 
 		$scope.marker.addListener('click', function () {
