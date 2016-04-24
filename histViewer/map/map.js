@@ -58,23 +58,38 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	$scope.setStartDate = function () {
 
-		$scope.startDate = new Date(document.getElementById("date1").value);
+		if(isNaN(document.getElementById("startDateInput").value)){
+			alert("Please enter a valid start year.")
+		}else{
+			$scope.startDate = new Date(document.getElementById("startDateInput").value);
+		}
 
 	};
 
 	$scope.setEndDate = function () {
 
-		$scope.endDate = new Date(document.getElementById("date2").value);
+		if(isNaN(document.getElementById("endDateInput").value)){
+			alert("Please enter a valid end year.");
+		}else{
+			$scope.endDate = new Date(document.getElementById("endDateInput").value);
+		}
 
 	};
 
 	$scope.setDateRange = function () {
-		var start = $("#startDateInput");
+		/*var start = $("#startDateInput");
 		var end = $("#endDateInput");
 		$scope.startDate = new Date("" + (parseInt(start.val()) + 1) + "");
-		$scope.endDate = new Date("" + (parseInt(end.val()) + 1) + "");
+		$scope.endDate = new Date("" + (parseInt(end.val()) + 1) + "");*/
 
-		reinitialize($scope.startDate, $scope.endDate);
+		$scope.setStartDate();
+		$scope.setEndDate();
+
+		if(isNaN(document.getElementById("startDateInput").value) || isNaN(document.getElementById("endDateInput").value)){
+			//do nothing
+		}else{
+			reinitialize($scope.startDate, $scope.endDate);
+		}
 
 	};
 
