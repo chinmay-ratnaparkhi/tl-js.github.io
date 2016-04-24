@@ -299,7 +299,7 @@ angular.module('histViewer.main', ['ngRoute'])
 
 			if (centerY + 40 > drawSpace.height()) {
 				heightDynamicalyUpdated = true;
-				var newHeight = drawSpace.height() + 150;
+				var newHeight = drawSpace.height() + 175;
 				drawSpace.height(newHeight);
 				$('#timelineContainer').height(newHeight);
 				$('#viewContainer').height(newHeight);
