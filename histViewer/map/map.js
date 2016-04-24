@@ -57,16 +57,22 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	$scope.setStartDate = function () {
 
+		$scope.startDate = new Date(document.getElementById("date1").value);
+
 	};
 
 	$scope.setEndDate = function () {
+
+		$scope.endDate = new Date(document.getElementById("date2").value);
 
 	};
 
 	$scope.setDateRange = function () {
 
-		$scope.startDate = new Date(1805, 0, 1);
-		$scope.endDate = new Date(1825, 11, 31);
+		/*$scope.startDate = new Date(1805, 0, 1);
+		$scope.endDate = new Date(1825, 11, 31);*/
+		$scope.setStartDate();
+		$scope.setEndDate();
 
 		reinitialize($scope.startDate, $scope.endDate);
 
