@@ -58,7 +58,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	$scope.setStartDate = function () {
 
-		if(isNaN(document.getElementById("startDateInput").value)){
+		if(isNaN(document.getElementById("startDateInput").value) || document.getElementById("startDateInput").value == ""){
 			alert("Please enter a valid start year.")
 		}else{
 			$scope.startDate = new Date(document.getElementById("startDateInput").value);
@@ -68,7 +68,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	$scope.setEndDate = function () {
 
-		if(isNaN(document.getElementById("endDateInput").value)){
+		if(isNaN(document.getElementById("endDateInput").value) || document.getElementById("endDateInput").value == ""){
 			alert("Please enter a valid end year.");
 		}else{
 			$scope.endDate = new Date(document.getElementById("endDateInput").value);
@@ -81,7 +81,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		$scope.setStartDate();
 		$scope.setEndDate();
 
-		if(isNaN(document.getElementById("startDateInput").value) || isNaN(document.getElementById("endDateInput").value)){
+		if(isNaN(document.getElementById("startDateInput").value) || isNaN(document.getElementById("endDateInput").value) || document.getElementById("startDateInput").value == "" || document.getElementById("endDateInput").value == ""){
 			//do nothing
 		}else{
 			reinitialize($scope.startDate, $scope.endDate);
