@@ -30,7 +30,7 @@ angular.module('databaseEntry.list', ['ngRoute'])
 		});
 
 		$scope.goto = function (where) {
-			$location.path("/db/" + where);
+			$location.path("/" + where);
 		};
 
 		$scope.goToDetail = function(id) {
