@@ -230,3 +230,20 @@ body, html {
 	top: 5%;
 	left: calc(50% - 200px);
 }
+
+.imageHolder {
+	height: 200px;
+	width: 200px;
+	margin-bottom: 10px;
+	padding-left: calc(50% - 100px);
+}
+
+.imageHolder img {
+	border: 1px solid black;
+	height: 200px;
+	width: 200px;
+}
+
+.imageHolder img:hover {
+	border-radius: 50%;
+}
