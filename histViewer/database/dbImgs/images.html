@@ -7,8 +7,9 @@
 
 <div>
 	<div ng-repeat="image in allImages | orderBy: 'name'| filter:query" ng-click="gotoDetail(image.name)">
-		<div class="list-item">
-			{{image.name}} - {{image.url}}
+		<div class="list-item" style="height:50px;">
+			{{image.name}}
+			<img ng-src="{{image.url}}" alt="None" style="max-width: 50px;max-height:50px">
 		</div>
 	</div>
 </div>

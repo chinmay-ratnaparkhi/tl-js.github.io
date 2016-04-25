@@ -94,7 +94,16 @@ angular.module('databaseEntry.service', ['ngRoute'])
 			});
 
 			request.success(function (data) {
-				addImage(newItem.who);
+				var needsImageCreate = true;
+				for (var i = 0; i < allItems.length; i++) {
+					if (allItems[i].who == newItem.who) {
+						needsImageCreate = false;
+						break;
+					}
+				}
+				if (needsImageCreate) {
+					addImage(newItem.who);
+				}
 				populateAllItems();
 			});
 
