@@ -3,6 +3,7 @@
 // Declare app level module which depends on views, and components
 angular.module('tljs', [
 	'ngRoute',
+	'ngAnimate',
 	'tljs.home',
 	'tljs.about',
 	'tljs.blog',

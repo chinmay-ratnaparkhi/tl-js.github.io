@@ -151,6 +151,15 @@ angular.module('histViewer.main', ['ngRoute'])
 				"left": left
 			};
 
+			//the event circle is animated when the mouse is hover over it.
+			$(".eventCircle").hover(function(){
+				$(this).addClass('animated bounceIn');
+				$(this).css("background-color", "green");
+			}, function(){
+				$(this).removeClass('animated bounceIn');
+				$(this).css("background-color", "#ff3700");
+			});
+
 			$(".eventCircle").each(function(i, obj) {
 				var objPos = $(obj).position();
 				if (objPos.top == $scope.currentEventLocation.top) {

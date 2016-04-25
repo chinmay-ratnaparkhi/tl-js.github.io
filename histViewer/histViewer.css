@@ -4,6 +4,8 @@ body, html {
 	margin: 0;
 	padding: 0;
 	display: table;
+	font-family:Georgia,"Times New Roman",Times,serif;
+	font-size:medium;
 }
 
 .wholeScreen {
@@ -12,13 +14,13 @@ body, html {
 }
 
 .sideBar {
-	background: url("http://i.stack.imgur.com/sepyh.jpg");
+	background: url(images/paper1.jpg);
 	float: left;
 	overflow:auto;
 }
 
 .viewContainer {
-	background: url(images/restaurant.png);
+	background: url(images/paper1.jpg);
 	float: left;
 	overflow: hidden;
 }
@@ -152,6 +154,10 @@ body, html {
 	border-radius: 50%;
 	border: 1px solid black;
 	background: #ff631a;
+
+	-webkit-animation-duration: 1s;
+	-webkit-animation-delay: 0s;
+	-webkit-animation-iteration-count: 1;
 }
 
 .eventCircle:hover .timelinePopup{
