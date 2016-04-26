@@ -268,42 +268,31 @@ angular.module('histViewer.bubble', ['ngRoute'])
 				for (var i = 0; i < $scope.allItems.length; i++) {
 					$scope.allItems[i].imgUrl = $scope.allImages[$scope.allItems[i].who];
 				}
-				debugger;
 				generateAspectBubbles(parseInt($routeParams.id), false);
 			}
 		}
 
-		if ($scope.allItems.length < 1) {
-			$(".se-pre-con").show();
-			DatabaseControlService.ensureDataPopulated().then(function () {
-				$scope.allItems = DatabaseControlService.getItems();
-				for (var i = 0; i < $scope.allItems.length; i++) {
-					$scope.allItems[i].who = correctCapitalization($scope.allItems[i].who);
-				}
-				$(".se-pre-con").fadeOut("slow");
-				readyUp();
-			});
-		}
-		else {
+		$(".se-pre-con").show();
+		DatabaseControlService.ensureDataPopulated().then(function () {
+			$scope.allItems = DatabaseControlService.getItems();
+			for (var i = 0; i < $scope.allItems.length; i++) {
+				$scope.allItems[i].who = correctCapitalization($scope.allItems[i].who);
+			}
+			$(".se-pre-con").fadeOut("slow");
 			readyUp();
-		}
+		});
 
-		if (images.length < 1) {
-			$(".se-pre-con").show();
-			DatabaseControlService.ensureImagesPopulated().then(function () {
-				images = DatabaseControlService.getImages();
-				$(".se-pre-con").fadeOut("slow");
-				for (var i = 0; i < images.length; i++) {
-					var image = images[i];
-					var newName = correctCapitalization(image.name);
-					$scope.allImages[newName] = image.url;
-				}
-				readyUp();
-			});
-		}
-		else {
+		$(".se-pre-con").show();
+		DatabaseControlService.ensureImagesPopulated().then(function () {
+			images = DatabaseControlService.getImages();
+			$(".se-pre-con").fadeOut("slow");
+			for (var i = 0; i < images.length; i++) {
+				var image = images[i];
+				var newName = correctCapitalization(image.name);
+				$scope.allImages[newName] = image.url;
+			}
 			readyUp();
-		}
+		});
 
 		//Calculate the font-size for the view
 		var container = document.getElementById("bubble-container");
