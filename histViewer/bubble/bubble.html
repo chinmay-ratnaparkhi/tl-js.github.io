@@ -7,7 +7,7 @@
 		</div>
 
 		<section ng-repeat="bubble in bubbles">
-			<div class="bubble-ring" ng-class="bubble.class" ng-click="bubbleClick($index)">
+			<div class="bubble-ring" ng-class="bubble.class" ng-click="bubbleClick($index)" ng-style="{'background-image': bubble.url }" style="background-size: cover">
 				<i class="fa bubble-fa-icon" ng-class="bubble.icon"></i>
 				<div class="bubbleTextContainer">
 					<span>{{bubble.text}}</span>

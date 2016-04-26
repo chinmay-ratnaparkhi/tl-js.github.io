@@ -250,6 +250,10 @@ angular.module('histViewer.bubble', ['ngRoute'])
 				var link = assocItems[i];
 				link.text = link.what;
 				link.class = "deg-" + degreeVals.startDegree;
+				var url = $scope.allImages[link.who];
+				if (url.length > 0) {
+					link.url = "url(" + url + ")";
+				}
 				degreeVals.startDegree += degreeVals.degreeSpacing;
 			}
 
@@ -272,20 +276,22 @@ angular.module('histViewer.bubble', ['ngRoute'])
 			}
 		}
 
-		$(".se-pre-con").show();
+		var load = $(".se-pre-con");
+
+		load.show();
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.allItems = DatabaseControlService.getItems();
 			for (var i = 0; i < $scope.allItems.length; i++) {
 				$scope.allItems[i].who = correctCapitalization($scope.allItems[i].who);
 			}
-			$(".se-pre-con").fadeOut("slow");
+			load.fadeOut("slow");
 			readyUp();
 		});
 
-		$(".se-pre-con").show();
+		load.show();
 		DatabaseControlService.ensureImagesPopulated().then(function () {
 			images = DatabaseControlService.getImages();
-			$(".se-pre-con").fadeOut("slow");
+			load.fadeOut("slow");
 			for (var i = 0; i < images.length; i++) {
 				var image = images[i];
 				var newName = correctCapitalization(image.name);
