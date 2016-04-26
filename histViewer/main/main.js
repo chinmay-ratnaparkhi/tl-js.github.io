@@ -183,7 +183,11 @@ angular.module('histViewer.main', ['ngRoute'])
 			});
 
 			var div = '<div class="eventCircle" id="event-' + numberShownEvents + '" style="top:' + topVal + 'px;left:' + left + 'px;">';
-			timelineEventLocations.push({numberShownEvents, xPos, timelineHeight, event});
+			timelineEventLocations.push({
+				numberShownEvents:numberShownEvents,
+				xPos:xPos, timelineHeight:timelineHeight,
+				event:event
+			});
 
 			var innerdiv = '<div class="timelinePopup" ';
 			if ((momentEvent.year() - minYear)/yearGap <= 2) { //Circle is within the first 2 timeline sections
