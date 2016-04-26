@@ -90,7 +90,10 @@ angular.module('histViewer.main', ['ngRoute'])
 					}
 				}
 				if (totalTimelineEvents.length == 1) {
-					$scope.person = totalTimelineEvents[0][0].who;
+					$scope.person = {
+						"name":totalTimelineEvents[0][0].who,
+						"url":$scope.allImages[totalTimelineEvents[0][0].who]
+					};
 				}
 				createTimeline(totalTimelineEvents);
 			}
