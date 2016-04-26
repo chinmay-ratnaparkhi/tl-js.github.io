@@ -33,6 +33,8 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		var totalTimelineEvents = [];
 
+		$scope.allImages = {};
+
 		var timelineEventLocations = [];
 		var numberShownEvents = 0;
 
@@ -65,7 +67,7 @@ angular.module('histViewer.main', ['ngRoute'])
 			numberShownEvents = 0;
 			$(".se-pre-con").show(); //Show the loading spinner
 			$scope.person = person;
-			DatabaseControlService.queryForWho(person.toUpperCase()).then(function () {//Load the data from the person selected
+			DatabaseControlService.queryForWho(person.name.toUpperCase()).then(function () {//Load the data from the person selected
 				var timelineEvents = DatabaseControlService.getQueryItems();
 				for (var i = 0; i < timelineEvents.length; i++) {
 					timelineEvents[i].who = correctCapitalization(timelineEvents[i].who);
@@ -103,15 +105,22 @@ angular.module('histViewer.main', ['ngRoute'])
 
 		//This function is used to add people back into the listing on the left.
 		function addPersons(name) {
-			$scope.people.push(name);
+			var obj = {
+				"name": name,
+				"url": $scope.allImages[name]
+			};
+			$scope.people.push(obj);
 			//$scope.$apply();
 		}
 
 		//This function is used to remove the person's name from the listing on the left so that they cannot be selected twice.
 		function removePersons(event) {
-			var index = $scope.people.indexOf(event[0].who);
-			if (index > -1) {
-				$scope.people.splice(index, 1);
+			var checkName = event[0].who;
+			for (var i = 0; i < $scope.people.length; i++) {
+				if (checkName == $scope.people[i].name) {
+					$scope.people.splice(i, 1);
+					break;
+				}
 			}
 		}
 
@@ -337,18 +346,37 @@ angular.module('histViewer.main', ['ngRoute'])
 			});
 
 			var fa = '<i class="fa fa-user"></i>';
+			var actualImg;
+
+			if (personName) {
+				actualImg = '<img class="timelineActualImg" src="' + $scope.allImages[personName] + '">';
+			}
+			else {
+				actualImg = '<img class="timelineActualImg" src="' + $scope.person.url + '">';
+			}
 
 			var faMap = '<i class="fa fa-globe"></i>';
 
-			div.append(fa);
+			if ($scope.person.url) {
+				div.append(actualImg);
+			}
+			else {
+				div.append(fa);
+			}
 			mapDiv.append(faMap);
 
-			var person = '<p class="timelineName">';
+			var person;
+			if ($scope.person.url) {
+				person = '<p class="timelineName" style="margin-top:-14px">';
+			}
+			else {
+				person = '<p class="timelineName" style="margin-top:8px">';
+			}
 			if (personName) {
 				person += personName + '</p>';
 			}
 			else {
-				person += $scope.person + '</p>';
+				person += $scope.person.name + '</p>';
 			}
 
 			div.append(person);
@@ -572,22 +600,49 @@ angular.module('histViewer.main', ['ngRoute'])
 			for (var i in $scope.allItems) {
 				if (!currentPerson || $scope.allItems[i].who != currentPerson) {
 					currentPerson = $scope.allItems[i].who;
-					people.push(currentPerson);
+					var addItem = {
+						"name":currentPerson,
+						"url":$scope.allItems[i].imgUrl
+					};
+					people.push(addItem);
 				}
 			}
 			people = $.unique(people);
 			$scope.people = people;
 		}
 
+		$scope.count = 0;
+
+		function readyUp() {
+			$scope.count+=1;
+			if ($scope.count > 1) {
+				//Add urls to allItems
+				for (var i = 0; i < $scope.allItems.length; i++) {
+					$scope.allItems[i].imgUrl = $scope.allImages[$scope.allItems[i].who];
+				}
+				generatePeople();
+				checkHistory();
+				triggerClickScroll();
+				$(".se-pre-con").fadeOut("slow");
+			}
+		}
+
+		DatabaseControlService.ensureImagesPopulated().then(function () {
+			var images = DatabaseControlService.getImages();
+			for (var i = 0; i < images.length; i++) {
+				var image = images[i];
+				var newName = correctCapitalization(image.name);
+				$scope.allImages[newName] = image.url;
+			}
+			readyUp();
+		});
+
 		DatabaseControlService.ensureDataPopulated().then(function () {
 			$scope.allItems = DatabaseControlService.getItems();
 			for (var i = 0; i < $scope.allItems.length; i++) {
 				$scope.allItems[i].who = correctCapitalization($scope.allItems[i].who);
 			}
-			generatePeople();
-			checkHistory();
-			triggerClickScroll();
-			$(".se-pre-con").fadeOut("slow");
+			readyUp();
 		});
 
 		//Create variables in order to access certain DOM elements
