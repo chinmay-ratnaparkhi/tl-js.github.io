@@ -4,6 +4,8 @@ body, html {
 	margin: 0;
 	padding: 0;
 	display: table;
+	font-family:Georgia,"Times New Roman",Times,serif;
+	font-size:medium;
 }
 
 .wholeScreen {
@@ -12,13 +14,13 @@ body, html {
 }
 
 .sideBar {
-	background: url("http://i.stack.imgur.com/sepyh.jpg");
+	background: #337AB7;
 	float: left;
 	overflow:auto;
 }
 
 .viewContainer {
-	background: url(images/restaurant.png);
+	background: url(images/paper1.jpg);
 	float: left;
 	overflow: hidden;
 }
@@ -115,7 +117,7 @@ body, html {
 
 .timelineName {
 	font-size: 12px;
-	margin-top: 8px;
+	font-weight: bold;
 }
 
 .timelineDrawSpace {
@@ -151,6 +153,10 @@ body, html {
 	border-radius: 50%;
 	border: 1px solid black;
 	background: #ff631a;
+
+	-webkit-animation-duration: 1s;
+	-webkit-animation-delay: 0s;
+	-webkit-animation-iteration-count: 1;
 }
 
 .eventCircle:hover .timelinePopup{
@@ -217,8 +223,40 @@ body, html {
 	text-align: center;
 	color: rgb(230,230,230);
 	font-size: 20px;
+	font-weight: bold;
 	height: 1em;
 	width: 400px;
 	top: 5%;
 	left: calc(50% - 200px);
+}
+
+.imageHolder {
+	height: 200px;
+	width: 200px;
+	margin-bottom: 10px;
+	padding-left: calc(50% - 100px);
+}
+
+.imageHolder img {
+	border: 1px solid black;
+	height: 200px;
+	width: 200px;
+}
+
+.imageHolder img:hover {
+	border-radius: 50%;
+}
+
+.mainListingImage {
+	height: 48px;
+	width: 48px;
+	border-radius: 50%;
+	vertical-align: inherit;
+}
+
+.timelineActualImg {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	vertical-align: baseline;
 }
