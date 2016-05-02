@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="css/main.css">
 	<script src="includes/moment.js"></script>
 	<script src="includes/require.min.js"></script>
+	<script src="includes/jquery.min.js"></script>
 </head>
 <body style="text-align: center;width:50%;">
 
@@ -34,7 +35,7 @@
 </p>
 
 <h1 class="sectionHead">Bubble View</h1>
-<img src="blog_pictures/bubbleView.png" class="postImage">
+<img src="blog_pictures/bubbleView.png" class="postImage" style="border-radius: 10%;">
 <p class="paragraphText">
 	The bubble view is the next best thing in historical data visualization.
 	This view takes a very basic model for anything historical (who, what, when and where) and is able to expand that into a web of other information.
@@ -47,23 +48,23 @@
 </p>
 
 <h1 class="sectionHead">Map View</h1>
-<img src="blog_pictures/mapView.png" class="postImage">
+<img src="blog_pictures/mapView.png" class="postImage" style="border-radius: 10%;">
 <p class="paragraphText">
 	Our map view was created because we wanted a way to show events in a different light.
 	There are many different pieces of software that are already on the market that allow you to view dates and events easily, but we wanted a way to see how some of the locations for events coorelate.
 	If you were for instance looking at an event that happened in Lawrence, Kansas you may want to look to see if there are any other events that also happened around that area.
 </p>
 <p class="paragraphText">
-	This view will also eventually allow us to take a person that we are interested in and be able to see how their lives played out over time.
-	We will be able to essentially get an interactive video biography of any person that we so choose.
+	This view also allowed us to take a person that we are interested in and see how their lives played out over time.
+	Through the use of the date filters in the bottom right you can choose a time frame that you would like to look at and the view will adjust to those times.
 </p>
 
 <h1 class="sectionHead">Backend</h1>
 <img src="blog_pictures/backend.png" class="postImage">
 <p class="paragraphText">
-	We are going to be creating a backend for our product that will be used for storing historical events.
-	We are going to be hosting our back end services using Heroku and Heroku Postgres.
-	This will allow us to upkeep and manage a database that we will be able to use to gather information for our project.
+	For our project we created a backend for our product that stores the historical events.
+	It is hosted through Heroku and has a PostgreSQL database.
+	This allows for anyone to edit and upkeep the information for our project.
 </p>
 
 <h1 class="sectionHead">Futurecast</h1>
@@ -75,7 +76,13 @@
 </p>
 
 <h1 class="sectionHead">Demo</h1>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/eVZ9P5KgyoM" frameborder="0" allowfullscreen></iframe>
+<iframe id="video" width="560" height="315" src="https://www.youtube.com/embed/eVZ9P5KgyoM" frameborder="0" allowfullscreen></iframe>
 
+<script>
+	$(document).ready(function () {
+		var vid = $("#video")[0];
+		vid.width = ("" + $(document).width()/2);
+	});
+</script>
 </body>
 </html>
