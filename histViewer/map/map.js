@@ -9,7 +9,7 @@ histViewerMap.config(['$routeProvider', function ($routeProvider) {
 	});
 }]);
 
-histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', '$location', '$routeParams', function ($scope, DatabaseControlService, $location, $routeParams) {
+histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 'HistoryService', '$location', '$routeParams', function ($scope, DatabaseControlService, HistoryService, $location, $routeParams) {
 	$(".se-pre-con").hide();
 
 	$scope.currentView = 'map';
@@ -27,6 +27,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 	var places = [];
 	var address = "";
+	var bubbleId;
 
 	var mapOfWho = $routeParams.who;
 	if (mapOfWho == "") {
@@ -35,6 +36,10 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 	$scope.title = $routeParams.who;
 
 	DatabaseControlService.queryForWho(mapOfWho.toUpperCase()).then(function () {//Load the data from the place selected
+		bubbleId = HistoryService.getLastBubble();
+		if (bubbleId && bubbleId > -1) {
+
+		}
 		initialize();
 		var mapItems = DatabaseControlService.getQueryItems();
 
@@ -53,7 +58,14 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 
 	$scope.hideMap = function () {
-		$location.path("/main");
+		var lastMap = HistoryService.getLastView();
+		if (lastMap && lastMap != 'timeline') {
+			var lastBubble = HistoryService.getLastBubble();
+			$location.path("/bubble/" + lastBubble);
+		}
+		else {
+			$location.path("/main");
+		}
 	};
 
 	$scope.setStartDate = function () {
@@ -390,8 +402,24 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 			if($scope.latlngnum == 1){
 				$scope.map.setCenter($scope.latlng[0]);
-			}else{
+				$scope.map.setZoom(12);
+			}
+			else if (bubbleId && bubbleId > -1) {
+				for (var k = 0; k < $scope.locations.length; k++) {
+					if ($scope.locations[k]["address"]["id"] == bubbleId) {
+						$scope.map.setCenter($scope.latlng[k]);
+						break;
+					}
+				}
+			}
+			else{
 				$scope.map.fitBounds(latlngbounds);
+
+				var setZoom = new google.maps.event.addListener($scope.map, "idle", function(){
+					if($scope.map.getZoom() >= 13){
+						$scope.map.setZoom(12);
+					}
+				});
 			}
 		}
 	}
@@ -419,8 +447,16 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 
 			if($scope.latlngnum == 1){
 				$scope.map.setCenter($scope.latlng[0]);
+				$scope.map.setZoom(12);
 			}else{
 				$scope.map.fitBounds(latlngbounds);
+
+				var setZoom = new google.maps.event.addListener($scope.map, "idle", function(){
+					if($scope.map.getZoom() >= 13){
+						$scope.map.setZoom(12);
+					}
+				});
+
 			}
 		}
 	}
@@ -433,7 +469,7 @@ histViewerMap.controller('testController', ['$scope', 'DatabaseControlService', 
 		$scope.markers[index].addListener('click', function () {
 			$scope.infoWindowMulti.open($scope.map, this);
 		});
-	}
+	};
 
 	function consolidateMarkers(i, j){
 
